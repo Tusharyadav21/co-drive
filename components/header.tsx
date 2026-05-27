@@ -35,7 +35,14 @@ export function Header({ username, avatarInitials }: DashboardHeaderProps) {
       <div className="container mx-auto flex h-16 max-w-lg items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <div className="relative h-12 w-12 overflow-hidden">
-            <Image src="/apple-touch-icon.png" fill={true} alt="Logo" className="object-cover" />
+            <Image
+              src="/apple-touch-icon.png"
+              fill={true}
+              sizes="48px"
+              preload
+              alt="Logo"
+              className="object-cover"
+            />
           </div>
           <span className="text-base font-bold tracking-tight">CoDrive</span>
         </div>
