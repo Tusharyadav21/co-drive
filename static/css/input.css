@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes flash-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-16px); }
+  }
+  .animate-fade-in { animation: fade-in 0.4s ease-out both; }
+  .flash-message[data-auto-dismiss] { animation: flash-in 0.3s ease-out, flash-out 0.3s ease-in 3.7s forwards; }
+}
+
+@layer utilities {
+  .blur-\[80px\] { filter: blur(80px); }
+  .h-\[180px\] { height: 180px; }
+  .h-\[350px\] { height: 350px; }
+  .w-\[80px\] { width: 80px; }
+  .w-\[180px\] { width: 180px; }
+  .w-\[220px\] { width: 220px; }
+  .w-\[350px\] { width: 350px; }
+  .max-w-\[80px\] { max-width: 80px; }
+  .max-w-\[180px\] { max-width: 180px; }
+  .max-w-\[220px\] { max-width: 220px; }
+  .p-\[1px\] { padding: 1px; }
+  .rounded-\[11px\] { border-radius: 11px; }
+  .scale-\[0\.98\] { transform: scale(0.98); }
+  .text-\[8px\] { font-size: 8px; line-height: 1; }
+  .text-\[9px\] { font-size: 9px; line-height: 1; }
+  .text-\[10px\] { font-size: 10px; line-height: 1; }
+  .text-\[11px\] { font-size: 11px; line-height: 1; }
+  .w-\[calc\(100\%-32px\)\] { width: calc(100% - 32px); }
+}

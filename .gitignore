@@ -1,29 +1,23 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Go
+/go/bin/
+/bin/
+*.exe
+*.test
+*.out
+coverage.out
 
-# dependencies
-/node_modules
-bun.lock
+# Node
+node_modules/
 
-# next.js
-/.next/
-/out/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# production
-/build
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files
-.env*
+# Env
+.env
 !.env.example
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# OS
+.DS_Store

@@ -1,0 +1,34 @@
+# Air configuration for hot reload
+root: "."
+tmp_dir: "tmp"
+
+build:
+  bin: "./tmp/main"
+  cmd: "go build -o ./tmp/main ./cmd/server"
+  delay: 1000
+  exclude_dir: ["assets", "tmp", "vendor", "testdata", "static", "templates"]
+  exclude_file: []
+  exclude_regex: ["_test.go"]
+  exclude_unchanged: true
+  follow_symlink: true
+  full_bin: ""
+  log: "build-errors.log"
+  poll: false
+  poll_interval: 0
+  rerun: false
+  rerun_delay: 500
+  send_interrupt: false
+  stop_on_error: true
+
+color:
+  app: ""
+  build: "yellow"
+  main: "magenta"
+  runner: "green"
+  watcher: "cyan"
+
+log:
+  time: true
+
+misc:
+  clean_on_exit: true

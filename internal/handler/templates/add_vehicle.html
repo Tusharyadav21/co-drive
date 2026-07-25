@@ -1,0 +1,61 @@
+{{define "title"}}Add Vehicle{{end}}
+
+{{define "content"}}
+<div class="min-h-screen bg-zinc-50 pb-16 dark:bg-zinc-950">
+    <header class="sticky top-0 z-20 border-b border-zinc-200/50 bg-zinc-50/80 backdrop-blur-md dark:border-zinc-900/50 dark:bg-zinc-950/80">
+        <div class="container mx-auto flex h-16 max-w-lg items-center gap-3 px-4">
+            <a href="/">
+                <button class="cursor-pointer rounded-xl border border-zinc-200/60 bg-white p-2 text-zinc-500 shadow-2xs transition-colors hover:text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+            </a>
+            <span class="truncate text-sm leading-tight font-bold">Add Vehicle</span>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-lg px-4 py-6">
+        <div class="overflow-hidden rounded-3xl border border-zinc-200/60 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="p-5 pb-2">
+                <h2 class="text-lg font-bold tracking-tight text-zinc-800 dark:text-white">Add New Vehicle</h2>
+            </div>
+            <div class="p-5 pt-2">
+                <form method="POST" action="/vehicles/new" class="flex flex-col gap-6">
+                    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="flex flex-col gap-2">
+                            <label for="name" class="text-sm font-medium">Vehicle Name *</label>
+                            <input type="text" id="name" name="name" placeholder="e.g., My Honda Civic" required class="focus:ring-ring rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="make" class="text-sm font-medium">Make *</label>
+                            <input type="text" id="make" name="make" placeholder="e.g., Honda" required class="focus:ring-ring rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="flex flex-col gap-2">
+                            <label for="model" class="text-sm font-medium">Model *</label>
+                            <input type="text" id="model" name="model" placeholder="e.g., Civic" required class="focus:ring-ring rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="year" class="text-sm font-medium">Year *</label>
+                            <input type="number" id="year" name="year" min="1900" max="{{.MaxYear}}" value="{{.MaxYear}}" required class="focus:ring-ring rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label for="license_plate" class="text-sm font-medium">License Plate *</label>
+                        <input type="text" id="license_plate" name="license_plate" placeholder="e.g., ABC123" required class="focus:ring-ring rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none">
+                    </div>
+
+                    {{if .Error}}
+                    <div class="bg-red-50 text-red-600 rounded-lg p-3 text-sm dark:bg-red-900/20 dark:text-red-400">{{.Error}}</div>
+                    {{end}}
+
+                    <button type="submit" class="h-12 cursor-pointer rounded-2xl bg-indigo-600 text-sm font-semibold text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50">Create Vehicle</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+{{end}}

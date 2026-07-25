@@ -1,0 +1,35 @@
+{{define "partials/vehicle_hero.html"}}
+<section class="relative overflow-hidden rounded-3xl bg-linear-to-tr from-zinc-900 via-zinc-800 to-zinc-900 p-5 text-white shadow-xl dark:border dark:border-zinc-800">
+    <div class="absolute top-0 right-0 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl"></div>
+    <div class="relative z-10 flex items-start justify-between">
+        <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-md">
+                {{if .IsTwoWheeler}}
+                <svg class="h-6 w-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                {{else}}
+                <svg class="h-6 w-6 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.884 12.222c.05-.274.08-.55.08-.832 0-1.704-1.272-3.112-2.879-3.486.437-.266.816-.6 1.107-1.017C14.56 5.804 13.038 5 11.284 5c-1.753 0-3.275.804-4.108 2.074.29.417.67.756 1.117 1.017C6.272 6.234 5 7.642 5 9.346c0 .282.03.558.08.832H2v2h2v13a2 2 0 002 2h16a2 2 0 002-2V14h2v-2h-2.116zM8 14a2 2 0 114 0 2 2 0 01-4 0zm8 0a2 2 0 114 0 2 2 0 01-4 0z"/></svg>
+                {{end}}
+            </div>
+            <div>
+                <span class="text-[9px] leading-none font-bold tracking-wider text-zinc-400 uppercase">Vehicle Vault</span>
+                <h2 class="mt-0.5 text-xl leading-none font-bold tracking-tight">{{.Name}}</h2>
+                <span class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-zinc-300 bg-zinc-100 px-2 py-0.5 shadow-2xs dark:border-zinc-700 dark:bg-zinc-800/90">
+                    <div class="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    <span class="font-mono text-[10px] leading-none font-black tracking-wider text-zinc-800 uppercase dark:text-zinc-200">{{.LicensePlate}}</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-end gap-1">
+            <span class="text-[9px] font-bold tracking-wider text-zinc-400 uppercase">Fleet Access</span>
+            <div class="flex -space-x-1">
+                {{range .Users}}
+                <div key="{{.ID}}" class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-zinc-900 bg-indigo-600 text-[8px] font-bold text-white shadow-2xs" title="{{if .User}}{{.User.Name}}{{else}}{{.User.Email}}{{end}}">
+                    {{if .User}}{{(.User.Name | firstTwo | upper)}}{{else}}U{{end}}
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</section>
+{{end}}

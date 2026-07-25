@@ -1,0 +1,5 @@
+node_modules/
+bin/
+*.md
+static/css/input.css
+static/js/htmx.min.js

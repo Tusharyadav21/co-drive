@@ -1,0 +1,109 @@
+{{define "partials/mileage_tab.html"}}
+<div class="flex flex-col gap-4">
+    {{if .Vehicle.AverageEfficiency}}
+    <div class="grid grid-cols-2 gap-3">
+        <div class="shadow-xs flex flex-col gap-1.5 rounded-2xl border border-zinc-200/60 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+            <span class="flex items-center gap-1 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+                <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                Avg Mileage
+            </span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-xl font-black text-emerald-600 dark:text-emerald-400">{{printf "%.2f" .Vehicle.AverageEfficiency}}</span>
+                <span class="text-[10px] font-semibold text-zinc-400">km/l</span>
+            </div>
+        </div>
+        <div class="shadow-xs flex flex-col gap-1.5 rounded-2xl border border-zinc-200/60 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+            <span class="flex items-center gap-1 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
+                <svg class="h-3.5 w-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                Tracked Run
+            </span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-xl font-black text-zinc-800 dark:text-zinc-200">{{.Vehicle.TotalTrackedDistance | formatMileage}}</span>
+                <span class="text-[10px] font-semibold text-zinc-400">km</span>
+            </div>
+        </div>
+    </div>
+    {{end}}
+
+    {{if gt (len .Vehicle.ChartData) 1}}
+    <div class="shadow-xs rounded-3xl border border-zinc-200/60 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="mb-4 flex items-center gap-1.5">
+            <svg class="h-4 w-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <span class="text-xs font-bold text-zinc-500 dark:text-zinc-400">Odometer Logs (km)</span>
+        </div>
+        <div class="h-[180px] w-full">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="mileageGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stop-color="#4f46e5" stop-opacity="0.2" />
+                        <stop offset="95%" stop-color="#4f46e5" stop-opacity="0" />
+                    </defs>
+                </defs>
+                <g class="grid-lines" stroke="rgba(200,200,200,0.15)" stroke-dasharray="3,3" stroke-width="0.5">
+                    {{range $i := seq 0 5}}
+                    <line x1="5" y1="{{$i | gridY}}" x2="95" y2="{{$i | gridY}}" />
+                    {{end}}
+                </g>
+                <polyline fill="none" stroke="#4f46e5" stroke-width="2" points="{{.Vehicle.ChartPoints}}" />
+                <polyline fill="url(#mileageGradient)" stroke="none" points="{{.Vehicle.ChartPoints}} 95,95 5,95" />
+            </svg>
+        </div>
+    </div>
+    {{end}}
+
+    <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold tracking-wider text-zinc-400 uppercase">Activity Feed</span>
+            <span class="text-[10px] font-semibold text-zinc-400">{{len .Vehicle.MileageEntries}} entries</span>
+        </div>
+
+        {{if eq (len .Vehicle.MileageEntries) 0}}
+        <div class="shadow-xs flex flex-col items-center gap-3 rounded-3xl border border-zinc-200/60 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-50 text-zinc-400 dark:bg-zinc-950">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold">No logs listed yet</h4>
+                <p class="mt-1 max-w-[180px] text-[10px] leading-normal text-zinc-400">Add mileage logs, refills, or fuel prices using the floating add button below.</p>
+            </div>
+        </div>
+        {{else}}
+        <div class="relative flex flex-col gap-3 before:absolute before:top-4 before:bottom-4 before:left-5 before:w-0.5 before:bg-zinc-200/60 dark:before:bg-zinc-800/60">
+            {{range .Vehicle.MileageEntries}}
+            <div key="{{.ID}}" class="relative flex flex-col gap-1.5 pl-10">
+                <div class="absolute top-1.5 left-3.5 z-10 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white bg-indigo-600 ring-4 ring-indigo-500/10 dark:border-zinc-900"></div>
+                <div class="shadow-xs flex flex-col gap-2 rounded-2xl border border-zinc-200/60 bg-white p-3.5 dark:border-zinc-800 dark:bg-zinc-900">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-zinc-800 dark:text-zinc-200">{{.Mileage | formatMileage}} <span class="text-[10px] font-normal text-zinc-400">km</span></span>
+                        <span class="rounded-full bg-zinc-100 px-2 py-0.5 text-[9px] font-bold text-zinc-400 dark:bg-zinc-800">{{.Date.Format "02 Jan 2006"}}</span>
+                    </div>
+
+                    {{if or .FuelLitres .FuelAmount .Efficiency}}
+                    <div class="flex items-center gap-3 rounded-xl border border-emerald-500/10 bg-emerald-500/5 px-2.5 py-1.5 dark:bg-emerald-500/5">
+                        <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            {{if .FuelLitres}}
+                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">{{.FuelLitres}} Litres</span>
+                            {{end}}
+                            {{if and .FuelLitres .FuelAmount}}<span class="text-[10px] text-zinc-300 dark:text-zinc-800">•</span>{{end}}
+                            {{if .FuelAmount}}
+                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">₹{{.FuelAmount}} Spent</span>
+                            {{end}}
+                            {{if .Efficiency}}
+                            {{if or .FuelLitres .FuelAmount}}<span class="text-[10px] text-zinc-300 dark:text-zinc-800">•</span>{{end}}
+                            <span class="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">{{printf "%.2f" .Efficiency}} km/l</span>
+                            {{end}}
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{if .Notes}}
+                    <p class="rounded-xl bg-zinc-50 p-2 text-[10px] leading-tight text-zinc-500 italic dark:bg-zinc-950 dark:text-zinc-400">"{{.Notes}}"</p>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{end}}
+    </div>
+{{end}}

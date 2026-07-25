@@ -1,0 +1,62 @@
+{{define "partials/shares_tab.html"}}
+<div class="flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+        <span class="text-xs font-bold tracking-wider text-zinc-400 uppercase">Active Board</span>
+        <span class="text-[10px] font-semibold text-zinc-400">{{len .Vehicle.Users}} members</span>
+    </div>
+
+    <div class="shadow-xs flex flex-col gap-4 rounded-3xl border border-zinc-200/60 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div class="flex flex-col gap-3">
+            {{range .Vehicle.Users}}
+            {{if .User}}
+            {{$memberUsername := .User.Name}}
+            {{$isOwner := eq .Role "owner"}}
+            <div key="{{.ID}}" class="flex items-center justify-between rounded-2xl border border-zinc-200/40 bg-zinc-50 p-3 dark:border-zinc-900/60 dark:bg-zinc-950/40">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        {{$memberUsername | firstTwo | upper}}
+                    </div>
+                    <div>
+                        <span class="block text-xs font-bold">@{{$memberUsername}}</span>
+                        <span class="text-[9px] font-semibold text-zinc-400 capitalize">{{.Role}}</span>
+                    </div>
+                </div>
+
+                {{if not $isOwner}}
+                <form hx-post="/vehicles/{{$.Vehicle.ID}}/unshare/{{.ID}}" hx-target="#tab-content" hx-swap="innerHTML" class="inline">
+                    <button type="submit" class="cursor-pointer rounded-xl border border-transparent p-2 text-zinc-400 shadow-2xs transition-colors hover:border-red-500/20 hover:bg-red-500/5 hover:text-red-500 dark:hover:bg-red-500/10" title="Revoke Access">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v12m-6 0h12m-6 0v12"/></svg>
+                    </button>
+                </form>
+                {{end}}
+            </div>
+            {{end}}
+            {{end}}
+        </div>
+
+        <div class="my-1 h-px bg-zinc-200/60 dark:bg-zinc-800"></div>
+
+        <form hx-post="/vehicles/{{.Vehicle.ID}}/share" hx-target="#tab-content" hx-swap="innerHTML" class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold tracking-wider text-zinc-400 uppercase">Invite Family / Friends</span>
+                <div class="flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <span class="absolute top-3 left-3 text-xs text-zinc-400">@</span>
+                        <input type="text" name="email" placeholder="e.g. brother@domain.com" disabled="{{.SharingLoading}}" class="h-10 rounded-xl border-zinc-200 bg-zinc-50 pr-3 pl-7 text-xs font-semibold dark:border-zinc-800 dark:bg-zinc-950" required>
+                    </div>
+                    <button type="submit" disabled="{{.SharingLoading}}" class="h-10 cursor-pointer rounded-xl bg-indigo-600 px-4 text-xs font-semibold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-500 disabled:opacity-50">
+                        <svg class="mr-1 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                        Invite
+                    </button>
+                </div>
+            </div>
+
+            {{if .SharingError}}
+            <p class="animate-pulse text-[10px] font-medium text-red-500">{{.SharingError}}</p>
+            {{end}}
+            {{if .SharingSuccess}}
+            <p class="animate-pulse text-[10px] font-medium text-emerald-500">{{.SharingSuccess}}</p>
+            {{end}}
+        </form>
+    </div>
+{{end}}
