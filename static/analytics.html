@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-Drive | Mileage & Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F1F5F9;
+            --border-color: #E2E8F0;
+            --border-hover: #CBD5E1;
+            --border-focus: #2563EB;
+            --primary: #0F172A;
+            --primary-hover: #1E293B;
+            --accent: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --success: #059669;
+            --success-bg: #ECFDF5;
+            --success-border: #A7F3D0;
+            --warning: #D97706;
+            --warning-bg: #FFFBEB;
+            --warning-border: #FDE68A;
+            --error: #E11D48;
+            --error-bg: #FFF1F2;
+            --error-border: #FECDD3;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+            --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.15s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+        }
+
+        .nav-btn.active {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .sync-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px 4px 6px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-logout:hover {
+            background: #F1F5F9;
+            color: var(--text-main);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1140px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .vehicle-select-wrapper {
+            position: relative;
+        }
+
+        .vehicle-select {
+            appearance: none;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 9px 36px 9px 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            box-shadow: var(--shadow-subtle);
+            transition: border-color 0.15s ease;
+        }
+
+        .vehicle-select:focus {
+            border-color: var(--border-focus);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .btn-primary {
+            padding: 9px 16px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        /* KPI Cards Grid */
+        .analytics-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .analytics-kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .analytics-kpi-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .analytics-kpi-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .analytics-kpi-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Chart Section */
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px 20px;
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chart-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .analytics-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-subtle);
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn.active {
+            background: #FFFFFF;
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 310px;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            display: none;
+            pointer-events: none;
+            background: #0F172A;
+            color: #FFFFFF;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+            white-space: nowrap;
+            transform: translate(-50%, -115%);
+        }
+
+        /* History Table Section */
+        .history-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .history-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .history-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .history-table th {
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tr:hover td {
+            background: #F8FAFC;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metric-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+        }
+
+        .pill-efficiency {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border-color: #BFDBFE;
+        }
+
+        .btn-action-edit {
+            padding: 4px 10px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action-edit:hover {
+            background: var(--bg-subtle);
+            border-color: var(--border-hover);
+        }
+
+        .btn-action-del {
+            padding: 4px 8px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-left: 4px;
+        }
+
+        .btn-action-del:hover {
+            background: var(--error-bg);
+            border-color: var(--error-border);
+            color: var(--error);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            padding: 28px;
+            box-shadow: var(--shadow-modal);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            padding: 9px 16px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #E2E8F0;
+        }
+
+        /* Toast Notifications */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: #FFFFFF;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-modal);
+            display: none;
+            z-index: 100;
+            animation: slideUp 0.2s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 52px 24px;
+            background: #FFFFFF;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 0.925rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            max-width: 480px;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-inner">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/" class="logo">
+                    <div class="logo-mark">C</div>
+                    Co-Drive
+                </a>
+                <nav class="nav-links">
+                    <a href="/dashboard" class="nav-btn">Garage</a>
+                    <a href="/analytics" class="nav-btn active">Mileage & Analytics</a>
+                    <a href="/profile" class="nav-btn">Driver Profile</a>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <a href="/profile" class="user-pill" style="text-decoration: none; color: inherit;">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="user-email-text">user@example.com</span>
+                </a>
+                <button id="btn-logout" class="btn-logout">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Mileage & Performance Analytics</h1>
+                <p class="page-subtitle" id="selected-vehicle-subtitle">Analyze historical odometer readings and fuel
+                    efficiency trends.</p>
+            </div>
+            <div class="page-controls">
+                <div class="vehicle-select-wrapper">
+                    <select id="vehicle-select" class="vehicle-select" onchange="onVehicleChange(this.value)">
+                        <!-- Populated via JS -->
+                    </select>
+                    <span class="select-arrow">▼</span>
+                </div>
+                <button class="btn-primary" onclick="openLogModal()">+ Log Entry</button>
+            </div>
+        </div>
+
+        <div id="analytics-content" style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- KPI Summary Cards -->
+            <div class="analytics-kpi-grid" id="analytics-kpis">
+                <!-- Populated via JS -->
+            </div>
+
+            <!-- Performance Trend Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Visual Trends</h3>
+                    <div class="analytics-tabs">
+                        <button id="tab-chart-odo" class="tab-btn active" onclick="switchAnalyticsTab('odometer')">📈
+                            Odometer Progression</button>
+                        <button id="tab-chart-eff" class="tab-btn" onclick="switchAnalyticsTab('efficiency')">⚡ Fuel
+                            Economy (km/L)</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="chart-container">
+                    <div id="chart-svg-wrapper"></div>
+                    <div id="chart-tooltip" class="chart-tooltip"></div>
+                </div>
+            </div>
+
+            <!-- Detailed History Table -->
+            <div class="history-card">
+                <div class="history-header">
+                    <h3>Historical Mileage & Refill Entries (<span id="history-count">0</span>)</h3>
+                </div>
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Odometer</th>
+                                <th>Change</th>
+                                <th>Fuel Added</th>
+                                <th>Efficiency</th>
+                                <th>Notes</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="empty-analytics" class="empty-state" style="display: none;">
+            <h3>No Vehicles Found</h3>
+            <p>You haven't added any vehicles to your garage yet.</p>
+            <a href="/dashboard" class="btn-primary" style="text-decoration: none;">Go to Garage</a>
+        </div>
+    </main>
+
+    <!-- Mileage / Fuel Log Modal (Add & Edit) -->
+    <div id="log-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="log-modal-title">Log Mileage & Fuel</h3>
+                <button class="btn-close" onclick="closeModal('log-modal')">&times;</button>
+            </div>
+            <form id="log-form">
+                <input type="hidden" id="modal-entry-id">
+                <div class="form-group">
+                    <label for="modal-odometer">Odometer (km)</label>
+                    <input type="number" id="modal-odometer" required min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="modal-date">Date</label>
+                    <input type="date" id="modal-date">
+                </div>
+                <div class="form-group">
+                    <label for="modal-litres">Fuel Added (Litres - Optional)</label>
+                    <input type="number" id="modal-litres" min="0" step="0.1" placeholder="e.g. 35.5">
+                </div>
+                <div class="form-group">
+                    <label for="modal-cost">Cost ($ - Optional)</label>
+                    <input type="number" id="modal-cost" min="0" step="0.01" placeholder="e.g. 45.00">
+                </div>
+                <div class="form-group">
+                    <label for="modal-notes">Notes (Optional)</label>
+                    <input type="text" id="modal-notes" placeholder="e.g. Highway trip refill">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('log-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary" id="modal-submit-btn">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <script src="/static/api.js"></script>
+    <script>
+        let vehicles = [];
+        let activeVehicle = null;
+        let activeTab = 'odometer'; // 'odometer' or 'efficiency'
+
+        const toastEl = document.getElementById('toast');
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.style.display = 'block';
+            setTimeout(() => {
+                toastEl.style.display = 'none';
+            }, 3000);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+            }
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        async function init() {
+            try {
+                const user = await api('/api/users/me');
+                if (user && user.email) {
+                    document.getElementById('user-email-text').textContent = user.email;
+                    document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
+                }
+            } catch (err) {
+                window.location.href = '/auth';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetVehicleId = urlParams.get('id');
+            const targetTab = urlParams.get('tab');
+            if (targetTab === 'efficiency') {
+                activeTab = 'efficiency';
+            }
+
+            await loadData(targetVehicleId);
+        }
+
+        async function loadData(preferredId) {
+            try {
+                vehicles = await api('/api/vehicles');
+                if (!vehicles || vehicles.length === 0) {
+                    document.getElementById('analytics-content').style.display = 'none';
+                    document.getElementById('empty-analytics').style.display = 'block';
+                    document.getElementById('vehicle-select').style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('analytics-content').style.display = 'flex';
+                document.getElementById('empty-analytics').style.display = 'none';
+
+                // Populate Dropdown
+                const select = document.getElementById('vehicle-select');
+                select.innerHTML = vehicles.map(v => `
+                    <option value="${v.id}">${escapeHtml(v.name)} ${v.license_plate ? `(${v.license_plate})` : ''}</option>
+                `).join('');
+
+                let selected = vehicles[0];
+                if (preferredId) {
+                    const match = vehicles.find(v => v.id === preferredId);
+                    if (match) selected = match;
+                }
+
+                select.value = selected.id;
+                selectVehicle(selected);
+            } catch (err) {
+                showToast(err.message || 'Failed to load vehicle data');
+            }
+        }
+
+        function onVehicleChange(vId) {
+            const match = vehicles.find(v => v.id === vId);
+            if (match) {
+                // Update URL query param quietly without page reload
+                const url = new URL(window.location);
+                url.searchParams.set('id', vId);
+                window.history.replaceState({}, '', url);
+                selectVehicle(match);
+            }
+        }
+
+        function selectVehicle(v) {
+            activeVehicle = v;
+            document.getElementById('selected-vehicle-subtitle').textContent =
+                `${v.make || ''} ${v.model || ''} ${v.year > 0 ? `(${v.year})` : ''} ${v.license_plate ? `• Plate: ${v.license_plate}` : ''}`.trim() || 'Track distance milestones, fuel economy trends, and historical fill-ups.';
+
+            const entries = (v.mileage_entries || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+            const lastEntry = entries.length > 0 ? entries[entries.length - 1] : null;
+            const currentOdo = lastEntry ? lastEntry.mileage : 0;
+
+            // Compute KPIs
+            const totalEntries = entries.length;
+            const firstOdo = entries.length > 0 ? entries[0].mileage : 0;
+            const trackedKm = entries.length > 1 ? (currentOdo - firstOdo) : 0;
+
+            let totalLitres = 0;
+            let totalCost = 0;
+            let validEffSum = 0;
+            let validEffCount = 0;
+
+            entries.forEach(e => {
+                if (e.fuel_litres && e.fuel_litres > 0) totalLitres += e.fuel_litres;
+                if (e.fuel_amount && e.fuel_amount > 0) totalCost += e.fuel_amount;
+                if (e.efficiency && e.efficiency > 0) {
+                    validEffSum += e.efficiency;
+                    validEffCount++;
+                }
+            });
+
+            const avgEff = validEffCount > 0 ? (validEffSum / validEffCount).toFixed(1) : (lastEntry && lastEntry.efficiency ? lastEntry.efficiency.toFixed(1) : '--');
+
+            document.getElementById('analytics-kpis').innerHTML = `
+                <div class="analytics-kpi-card">
+                    <div class="analytics-kpi-label">Current Odometer</div>
+                    <div class="analytics-kpi-val">${currentOdo.toLocaleString()} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">km</span></div>
+                    <div class="analytics-kpi-sub">${totalEntries} total log${totalEntries === 1 ? '' : 's'} recorded</div>
+                </div>
+                <div class="analytics-kpi-card">
+                    <div class="analytics-kpi-label">Distance Tracked</div>
+                    <div class="analytics-kpi-val">${trackedKm > 0 ? `+${trackedKm.toLocaleString()}` : '--'} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">${trackedKm > 0 ? 'km' : ''}</span></div>
+                    <div class="analytics-kpi-sub">${entries.length > 1 ? 'Across logged period' : 'Requires ≥ 2 logs'}</div>
+                </div>
+                <div class="analytics-kpi-card">
+                    <div class="analytics-kpi-label">Avg Fuel Economy</div>
+                    <div class="analytics-kpi-val">${avgEff} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">${avgEff !== '--' ? 'km/L' : ''}</span></div>
+                    <div class="analytics-kpi-sub">${validEffCount > 0 ? `From ${validEffCount} refill cycle${validEffCount === 1 ? '' : 's'}` : 'Calculated on refills'}</div>
+                </div>
+                <div class="analytics-kpi-card">
+                    <div class="analytics-kpi-label">Total Fuel Logged</div>
+                    <div class="analytics-kpi-val">${totalLitres > 0 ? totalLitres.toFixed(1) : '0'} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">L</span></div>
+                    <div class="analytics-kpi-sub">${totalCost > 0 ? `$${totalCost.toFixed(2)} total spend` : 'Tracked from fill-ups'}</div>
+                </div>
+            `;
+
+            updateTabButtons();
+            renderChart(entries, activeTab);
+            renderTable(entries);
+        }
+
+        function switchAnalyticsTab(tab) {
+            activeTab = tab;
+            updateTabButtons();
+            if (activeVehicle) {
+                const entries = (activeVehicle.mileage_entries || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+                renderChart(entries, activeTab);
+            }
+        }
+
+        function updateTabButtons() {
+            const odoBtn = document.getElementById('tab-chart-odo');
+            const effBtn = document.getElementById('tab-chart-eff');
+            if (activeTab === 'odometer') {
+                odoBtn.classList.add('active');
+                effBtn.classList.remove('active');
+            } else {
+                odoBtn.classList.remove('active');
+                effBtn.classList.add('active');
+            }
+        }
+
+        function renderChart(entries, metric) {
+            const wrapper = document.getElementById('chart-svg-wrapper');
+            const tooltip = document.getElementById('chart-tooltip');
+            tooltip.style.display = 'none';
+
+            let dataPoints = [];
+            if (metric === 'odometer') {
+                dataPoints = entries.map(e => ({
+                    date: new Date(e.date),
+                    val: e.mileage,
+                    label: `${e.mileage.toLocaleString()} km`,
+                    entry: e
+                }));
+            } else {
+                dataPoints = entries.filter(e => e.efficiency && e.efficiency > 0).map(e => ({
+                    date: new Date(e.date),
+                    val: e.efficiency,
+                    label: `${e.efficiency.toFixed(1)} km/L`,
+                    entry: e
+                }));
+            }
+
+            if (dataPoints.length === 0) {
+                wrapper.innerHTML = `
+                    <div style="height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.88rem; text-align: center;">
+                        <span style="font-size: 2rem; margin-bottom: 8px;">📊</span>
+                        ${metric === 'odometer' ? 'No odometer entries recorded yet for this vehicle.' : 'No fuel efficiency data yet. Log at least two refills with litres to plot km/L trends.'}
+                    </div>
+                `;
+                return;
+            }
+
+            if (dataPoints.length === 1) {
+                wrapper.innerHTML = `
+                    <div style="height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.88rem; text-align: center;">
+                        <span style="font-size: 2rem; margin-bottom: 8px;">📈</span>
+                        Single data point: <strong>${dataPoints[0].label}</strong> on ${dataPoints[0].date.toLocaleDateString()}.<br>
+                        <span style="font-size: 0.78rem; margin-top: 6px;">Add another entry with "+ Log Entry" or from your Garage to draw interactive trend lines!</span>
+                    </div>
+                `;
+                return;
+            }
+
+            const svgW = 800;
+            const svgH = 300;
+            const pLeft = 70;
+            const pRight = 35;
+            const pTop = 30;
+            const pBottom = 50;
+            const plotW = svgW - pLeft - pRight;
+            const plotH = svgH - pTop - pBottom;
+            const baselineY = pTop + plotH;
+
+            const values = dataPoints.map(d => d.val);
+            let minVal = Math.min(...values);
+            let maxVal = Math.max(...values);
+            let valRange = maxVal - minVal;
+            if (valRange <= 0) {
+                valRange = Math.max(10, maxVal * 0.1 || 10);
+            }
+            const pad = valRange * 0.1;
+            const yMin = Math.max(0, minVal - pad);
+            const yMax = maxVal + pad;
+            const yRange = yMax - yMin;
+
+            const coords = dataPoints.map((d, i) => {
+                const x = pLeft + (i / (dataPoints.length - 1)) * plotW;
+                const y = pTop + plotH - ((d.val - yMin) / yRange) * plotH;
+                return { x, y, d };
+            });
+
+            const lineD = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+            const areaD = `${lineD} L ${coords[coords.length - 1].x.toFixed(1)} ${baselineY.toFixed(1)} L ${coords[0].x.toFixed(1)} ${baselineY.toFixed(1)} Z`;
+
+            // Horizontal Gridlines
+            let gridHTML = '';
+            const steps = 4;
+            for (let s = 0; s <= steps; s++) {
+                const gY = pTop + (s / steps) * plotH;
+                const gVal = yMax - (s / steps) * yRange;
+                const formattedVal = metric === 'odometer' ? Math.round(gVal).toLocaleString() : gVal.toFixed(1);
+                gridHTML += `
+                    <line x1="${pLeft}" y1="${gY.toFixed(1)}" x2="${svgW - pRight}" y2="${gY.toFixed(1)}" stroke="#F1F5F9" stroke-width="1" />
+                    <text x="${pLeft - 10}" y="${(gY + 4).toFixed(1)}" text-anchor="end" font-size="11" font-family="'JetBrains Mono', monospace" fill="#94A3B8">${formattedVal}</text>
+                `;
+            }
+
+            // Solid baseline axis line
+            const axisLine = `<line x1="${pLeft}" y1="${baselineY}" x2="${svgW - pRight}" y2="${baselineY}" stroke="#E2E8F0" stroke-width="1.5" />`;
+
+            // Smart X-Axis Labels: check whether data spans multiple days or same day
+            const firstDate = dataPoints[0].date;
+            const lastDate = dataPoints[dataPoints.length - 1].date;
+            const sameDay = firstDate.toDateString() === lastDate.toDateString();
+
+            // Select at most 4 or 5 evenly spaced ticks across dataPoints
+            const maxTicks = Math.min(5, dataPoints.length);
+            const tickIndices = [];
+            for (let t = 0; t < maxTicks; t++) {
+                const idx = Math.round((t / (maxTicks - 1)) * (dataPoints.length - 1));
+                if (!tickIndices.includes(idx)) {
+                    tickIndices.push(idx);
+                }
+            }
+
+            let xLabelsHTML = '';
+            tickIndices.forEach(idx => {
+                const pt = coords[idx];
+                let labelStr = '';
+                if (sameDay) {
+                    labelStr = pt.d.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                } else {
+                    labelStr = pt.d.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                }
+                xLabelsHTML += `
+                    <text x="${pt.x.toFixed(1)}" y="${(baselineY + 24).toFixed(1)}" text-anchor="middle" font-size="11" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" fill="#64748B">${labelStr}</text>
+                `;
+            });
+
+            const circlesHTML = coords.map((c, i) => `
+                <circle class="chart-point" data-idx="${i}" cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="4.5" fill="#FFFFFF" stroke="#2563EB" stroke-width="2.5" style="cursor: pointer; transition: all 0.15s ease;" />
+            `).join('');
+
+            wrapper.innerHTML = `
+                <svg viewBox="0 0 ${svgW} ${svgH}" style="width: 100%; height: 100%; display: block;" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#2563EB" stop-opacity="0.18" />
+                            <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0" />
+                        </linearGradient>
+                    </defs>
+                    ${gridHTML}
+                    ${axisLine}
+                    <path d="${areaD}" fill="url(#chartGrad)" />
+                    <path d="${lineD}" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    ${xLabelsHTML}
+                    ${circlesHTML}
+                </svg>
+            `;
+
+            const container = document.getElementById('chart-container');
+            wrapper.querySelectorAll('.chart-point').forEach(circle => {
+                circle.addEventListener('mouseenter', () => {
+                    circle.setAttribute('r', '7');
+                    circle.setAttribute('fill', '#2563EB');
+                    circle.setAttribute('stroke', '#FFFFFF');
+                    const idx = parseInt(circle.getAttribute('data-idx'), 10);
+                    const item = coords[idx];
+                    const entry = item.d.entry;
+                    const formattedDate = item.d.date.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                    let extraInfo = '';
+                    if (entry.fuel_litres) {
+                        extraInfo += `<br>⛽ Fuel: ${entry.fuel_litres} L ${entry.fuel_amount ? `($${entry.fuel_amount})` : ''}`;
+                    }
+                    if (entry.efficiency) {
+                        extraInfo += `<br>⚡ Efficiency: ${entry.efficiency.toFixed(1)} km/L`;
+                    }
+                    if (entry.notes) {
+                        extraInfo += `<br>📝 <em>${escapeHtml(entry.notes)}</em>`;
+                    }
+
+                    tooltip.innerHTML = `
+                        <div style="font-weight: 700; color: #93C5FD; margin-bottom: 2px;">${formattedDate}</div>
+                        <div><strong>${metric === 'odometer' ? 'Odometer' : 'Economy'}:</strong> ${item.d.label}</div>
+                        ${extraInfo}
+                    `;
+                    tooltip.style.display = 'block';
+
+                    const rect = circle.getBoundingClientRect();
+                    const contRect = container.getBoundingClientRect();
+                    tooltip.style.left = `${rect.left - contRect.left + rect.width / 2}px`;
+                    tooltip.style.top = `${rect.top - contRect.top}px`;
+                });
+
+                circle.addEventListener('mouseleave', () => {
+                    circle.setAttribute('r', '4.5');
+                    circle.setAttribute('fill', '#FFFFFF');
+                    circle.setAttribute('stroke', '#2563EB');
+                    tooltip.style.display = 'none';
+                });
+            });
+        }
+
+        function renderTable(entries) {
+            const tbody = document.getElementById('history-table-body');
+            document.getElementById('history-count').textContent = entries.length;
+
+            if (entries.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px 16px;">
+                            No historical records logged yet for this vehicle.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const reversed = entries.slice().reverse();
+            tbody.innerHTML = reversed.map((e, revIdx) => {
+                const origIdx = entries.length - 1 - revIdx;
+                let deltaHtml = '<span style="color: var(--text-muted);">--</span>';
+                if (origIdx > 0) {
+                    const diff = e.mileage - entries[origIdx - 1].mileage;
+                    if (diff > 0) {
+                        deltaHtml = `<span style="color: var(--success); font-weight: 600;">+${diff.toLocaleString()} km</span>`;
+                    } else if (diff === 0) {
+                        deltaHtml = `<span style="color: var(--text-muted);">0 km</span>`;
+                    } else {
+                        deltaHtml = `<span style="color: var(--error);">${diff.toLocaleString()} km</span>`;
+                    }
+                }
+
+                const dateStr = new Date(e.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+                const fuelStr = e.fuel_litres ? `${e.fuel_litres} L ${e.fuel_amount ? `<span style="color: var(--text-muted); font-size: 0.75rem;">($${e.fuel_amount})</span>` : ''}` : '<span style="color: var(--text-muted);">--</span>';
+                const effBadge = e.efficiency && e.efficiency > 0 ? `<span class="metric-pill pill-efficiency">⚡ ${e.efficiency.toFixed(1)} km/L</span>` : '<span style="color: var(--text-muted);">--</span>';
+
+                return `
+                    <tr>
+                        <td style="font-weight: 600;">${dateStr}</td>
+                        <td class="mono" style="font-weight: 700;">${e.mileage.toLocaleString()} km</td>
+                        <td class="mono">${deltaHtml}</td>
+                        <td>${fuelStr}</td>
+                        <td>${effBadge}</td>
+                        <td style="color: var(--text-muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(e.notes || '--')}</td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="btn-action-edit" onclick="openEditLogModal('${e.id}')">✏️ Edit</button>
+                            <button class="btn-action-del" title="Delete entry" onclick="deleteEntry('${e.id}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Quick Entry Modal
+        function openLogModal() {
+            if (!activeVehicle) return;
+            const entries = activeVehicle.mileage_entries || [];
+            const lastOdo = entries.length > 0 ? entries[entries.length - 1].mileage : 0;
+
+            document.getElementById('modal-entry-id').value = '';
+            document.getElementById('log-modal-title').textContent = 'Log Mileage & Fuel';
+            document.getElementById('modal-submit-btn').textContent = 'Save Entry';
+            document.getElementById('modal-odometer').value = lastOdo;
+            document.getElementById('modal-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-litres').value = '';
+            document.getElementById('modal-cost').value = '';
+            document.getElementById('modal-notes').value = '';
+            openModal('log-modal');
+        }
+
+        function openEditLogModal(entryId) {
+            if (!activeVehicle) return;
+            const entries = activeVehicle.mileage_entries || [];
+            const entry = entries.find(e => e.id === entryId);
+            if (!entry) return;
+
+            document.getElementById('modal-entry-id').value = entry.id;
+            document.getElementById('log-modal-title').textContent = 'Edit Mileage Entry';
+            document.getElementById('modal-submit-btn').textContent = 'Update Entry';
+            document.getElementById('modal-odometer').value = entry.mileage;
+            document.getElementById('modal-date').value = entry.date ? new Date(entry.date).toISOString().split('T')[0] : '';
+            document.getElementById('modal-litres').value = entry.fuel_litres || '';
+            document.getElementById('modal-cost').value = entry.fuel_amount || '';
+            document.getElementById('modal-notes').value = entry.notes || '';
+            openModal('log-modal');
+        }
+
+        async function deleteEntry(entryId) {
+            if (!activeVehicle) return;
+            if (!confirm('Are you sure you want to delete this mileage entry?')) return;
+
+            try {
+                await api(`/api/vehicles/${activeVehicle.id}/mileage/${entryId}`, {
+                    method: 'DELETE'
+                });
+                showToast('Mileage entry deleted');
+                await loadData(activeVehicle.id);
+            } catch (err) {
+                showToast(err.message || 'Failed to delete entry');
+            }
+        }
+
+        document.getElementById('log-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeVehicle) return;
+
+            const entryId = document.getElementById('modal-entry-id').value;
+            const odo = parseInt(document.getElementById('modal-odometer').value, 10);
+            const dateVal = document.getElementById('modal-date').value;
+            const litres = parseFloat(document.getElementById('modal-litres').value);
+            const cost = parseFloat(document.getElementById('modal-cost').value);
+            const notes = document.getElementById('modal-notes').value;
+
+            const payload = { mileage: odo, odometer: odo, notes: notes };
+            if (dateVal) {
+                payload.date = dateVal;
+            }
+            if (!isNaN(litres) && litres > 0) {
+                payload.fuel_litres = litres;
+                payload.litres = litres;
+            }
+            if (!isNaN(cost) && cost > 0) {
+                payload.fuel_amount = cost;
+                payload.cost = cost;
+            }
+
+            try {
+                if (entryId) {
+                    await api(`/api/vehicles/${activeVehicle.id}/mileage/${entryId}`, {
+                        method: 'PUT',
+                        body: payload
+                    });
+                    showToast('Mileage entry updated!');
+                } else {
+                    await api(`/api/vehicles/${activeVehicle.id}/mileage`, {
+                        method: 'POST',
+                        body: payload
+                    });
+                    showToast('Mileage entry saved!');
+                }
+                closeModal('log-modal');
+                await loadData(activeVehicle.id);
+            } catch (err) {
+                showToast(err.message || 'Failed to save log');
+            }
+        });
+
+        // Sign Out
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            try {
+                await api('/api/auth/logout', { method: 'POST' });
+            } catch (err) { }
+            window.location.href = '/auth';
+        });
+
+        init();
+    </script>
+</body>
+
+</html>

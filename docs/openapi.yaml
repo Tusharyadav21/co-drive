@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Co-Drive Auth & Storage API
+  version: 1.0.0
+  description: PostgreSQL-backed HTTP backend (Neon / Hosted / Local) with Email OTP and Password Reset.
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                full_name:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+  /api/auth/login:
+    post:
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Logged in successfully
+  /api/auth/otp/request:
+    post:
+      summary: Request Email OTP for passwordless login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: OTP code sent
+  /api/auth/otp/verify:
+    post:
+      summary: Verify Email OTP and issue session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, otp]
+              properties:
+                email:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        '200':
+          description: OTP verified and session created
+  /api/users/me:
+    get:
+      summary: Get logged-in user profile and details
+      responses:
+        '200':
+          description: Consolidated user identity and extended profile details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  full_name:
+                    type: string
+                  email_verified:
+                    type: boolean
+                  phone:
+                    type: string
+                  bio:
+                    type: string
+                  address:
+                    type: string
+                  emergency_contact:
+                    type: string
+                  avatar_url:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+        '401':
+          description: Unauthorized
+    put:
+      summary: Update logged-in user profile and details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                phone:
+                  type: string
+                bio:
+                  type: string
+                address:
+                  type: string
+                emergency_contact:
+                  type: string
+                avatar_url:
+                  type: string
+      responses:
+        '200':
+          description: Profile successfully updated
+        '400':
+          description: Invalid profile payload
+        '401':
+          description: Unauthorized

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-Drive | Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+            --border-focus: #2563EB;
+            --primary: #0F172A;
+            --primary-hover: #1E293B;
+            --accent: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --error: #E11D48;
+            --error-bg: #FFF1F2;
+            --success: #059669;
+            --success-bg: #ECFDF5;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+        }
+
+        header {
+            max-width: 440px;
+            width: 100%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-mark {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .card-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        input[type="email"]:focus, input[type="text"]:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        .btn-ghost:hover {
+            background: #F1F5F9;
+            color: var(--text-main);
+        }
+
+        /* 6-Digit OTP Boxes */
+        .otp-inputs {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .otp-box {
+            width: 48px;
+            height: 54px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: #FFFFFF;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .otp-box:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Banner & Alert */
+        .alert {
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .alert-error {
+            background: var(--error-bg);
+            border: 1px solid #FECDD3;
+            color: var(--error);
+        }
+
+        .alert-success {
+            background: var(--success-bg);
+            border: 1px solid #A7F3D0;
+            color: var(--success);
+        }
+
+        .helper-text {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 14px;
+            text-align: center;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .resend-btn:disabled {
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: not-allowed;
+        }
+
+        .badge-attempts {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--error-bg);
+            border: 1px solid #FECDD3;
+            color: var(--error);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 24px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="back-link">&larr; Back to Home</a>
+        <div class="logo">
+            <div class="logo-mark">C</div>
+            Co-Drive
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <!-- Global Alert Box -->
+            <div id="alert-box" class="alert"></div>
+
+            <!-- STEP 1: EMAIL ENTRY -->
+            <div id="step-email">
+                <div class="card-header">
+                    <h1>Sign In with Email</h1>
+                    <p>Enter your email address to receive a secure 6-digit login code. New users are registered automatically.</p>
+                </div>
+
+                <form id="email-form">
+                    <div class="form-group">
+                        <label for="email-input">Email Address</label>
+                        <input type="email" id="email-input" placeholder="name@company.com" required autofocus autocomplete="email">
+                    </div>
+
+                    <button type="submit" id="btn-send-otp" class="btn">
+                        <span>Continue with Code</span> &rarr;
+                    </button>
+                </form>
+            </div>
+
+            <!-- STEP 2: 6-DIGIT OTP ENTRY -->
+            <div id="step-otp" class="hidden">
+                <div class="card-header">
+                    <h1>Enter Verification Code</h1>
+                    <p>We sent a 6-digit code to <strong id="display-email" style="color: var(--text-main);"></strong></p>
+                </div>
+
+                <form id="otp-form">
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="0" autofocus>
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="1">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="2">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="3">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="4">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="5">
+                    </div>
+
+                    <div id="attempt-warning" class="hidden" style="text-align: center; margin-bottom: 12px;">
+                        <span class="badge-attempts" id="attempt-count-text"></span>
+                    </div>
+
+                    <button type="submit" id="btn-verify-otp" class="btn">
+                        <span>Verify & Sign In</span>
+                    </button>
+
+                    <button type="button" id="btn-change-email" class="btn btn-ghost">
+                        Change Email Address
+                    </button>
+
+                    <div class="helper-text">
+                        Didn't receive a code? 
+                        <button type="button" id="btn-resend-otp" class="resend-btn" disabled>Resend code</button>
+                        <span id="cooldown-timer">(in 60s)</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Co-Drive. Safe, passwordless vehicle management.
+    </footer>
+
+    <script src="/static/api.js"></script>
+    <script>
+        let userEmail = '';
+        let cooldownInterval = null;
+        let cooldownSeconds = 60;
+
+        const alertBox = document.getElementById('alert-box');
+        const stepEmail = document.getElementById('step-email');
+        const stepOtp = document.getElementById('step-otp');
+        const emailInput = document.getElementById('email-input');
+        const displayEmail = document.getElementById('display-email');
+        const otpBoxes = document.querySelectorAll('.otp-box');
+        const btnSendOtp = document.getElementById('btn-send-otp');
+        const btnVerifyOtp = document.getElementById('btn-verify-otp');
+        const btnResendOtp = document.getElementById('btn-resend-otp');
+        const cooldownTimer = document.getElementById('cooldown-timer');
+        const attemptWarning = document.getElementById('attempt-warning');
+        const attemptCountText = document.getElementById('attempt-count-text');
+
+        function showAlert(msg, isSuccess = false) {
+            alertBox.textContent = msg;
+            alertBox.className = isSuccess ? 'alert alert-success' : 'alert alert-error';
+            alertBox.style.display = 'block';
+        }
+
+        function hideAlert() {
+            alertBox.style.display = 'none';
+        }
+
+        function startCooldown(seconds) {
+            cooldownSeconds = seconds || 60;
+            btnResendOtp.disabled = true;
+            cooldownTimer.style.display = 'inline';
+            cooldownTimer.textContent = `(in ${cooldownSeconds}s)`;
+
+            if (cooldownInterval) clearInterval(cooldownInterval);
+
+            cooldownInterval = setInterval(() => {
+                cooldownSeconds--;
+                if (cooldownSeconds <= 0) {
+                    clearInterval(cooldownInterval);
+                    btnResendOtp.disabled = false;
+                    cooldownTimer.style.display = 'none';
+                } else {
+                    cooldownTimer.textContent = `(in ${cooldownSeconds}s)`;
+                }
+            }, 1000);
+        }
+
+        // STEP 1: SEND OTP
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            userEmail = emailInput.value.trim().toLowerCase();
+            if (!userEmail) return showAlert('Please enter a valid email address');
+
+            btnSendOtp.disabled = true;
+            btnSendOtp.textContent = 'Sending code...';
+
+            try {
+                const res = await api('/api/auth/otp/request', {
+                    method: 'POST',
+                    body: { email: userEmail }
+                });
+
+                displayEmail.textContent = userEmail;
+                stepEmail.classList.add('hidden');
+                stepOtp.classList.remove('hidden');
+                
+                showAlert('Verification code sent to your inbox!', true);
+                startCooldown(res.cooldown_seconds || 60);
+
+                // Focus first OTP box
+                setTimeout(() => {
+                    otpBoxes[0].focus();
+                }, 100);
+            } catch (err) {
+                showAlert(err.message || 'Failed to send OTP code. Please try again.');
+            } finally {
+                btnSendOtp.disabled = false;
+                btnSendOtp.innerHTML = '<span>Continue with Code</span> &rarr;';
+            }
+        });
+
+        // 6-Digit Auto-advance & Clipboard paste handling
+        otpBoxes.forEach((box, idx) => {
+            box.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val.length === 1 && idx < otpBoxes.length - 1) {
+                    otpBoxes[idx + 1].focus();
+                }
+
+                // If all 6 filled, auto-submit with 0 extra clicks
+                checkAutoSubmit();
+            });
+
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !box.value && idx > 0) {
+                    otpBoxes[idx - 1].focus();
+                }
+            });
+
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').trim();
+                if (/^\d{6}$/.test(paste)) {
+                    paste.split('').forEach((char, i) => {
+                        if (otpBoxes[i]) otpBoxes[i].value = char;
+                    });
+                    otpBoxes[5].focus();
+                    checkAutoSubmit();
+                }
+            });
+        });
+
+        function getEnteredOTP() {
+            let code = '';
+            otpBoxes.forEach(b => code += b.value);
+            return code.trim();
+        }
+
+        function checkAutoSubmit() {
+            const code = getEnteredOTP();
+            if (code.length === 6) {
+                submitOTP(code);
+            }
+        }
+
+        document.getElementById('otp-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = getEnteredOTP();
+            if (code.length !== 6) {
+                return showAlert('Please enter the full 6-digit code');
+            }
+            submitOTP(code);
+        });
+
+        async function submitOTP(code) {
+            hideAlert();
+            btnVerifyOtp.disabled = true;
+            btnVerifyOtp.textContent = 'Verifying...';
+
+            try {
+                await api('/api/auth/otp/verify', {
+                    method: 'POST',
+                    body: { email: userEmail, otp: code }
+                });
+
+                showAlert('Sign in successful! Redirecting to your garage...', true);
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 400);
+            } catch (err) {
+                otpBoxes.forEach(b => b.value = '');
+                otpBoxes[0].focus();
+
+                showAlert(err.message || 'Invalid or expired verification code');
+                if (err.data && typeof err.data.attempts_left === 'number') {
+                    attemptCountText.textContent = `${err.data.attempts_left} attempts remaining`;
+                    attemptWarning.classList.remove('hidden');
+                }
+            } finally {
+                btnVerifyOtp.disabled = false;
+                btnVerifyOtp.textContent = 'Verify & Sign In';
+            }
+        }
+
+        // Resend OTP
+        btnResendOtp.addEventListener('click', async () => {
+            hideAlert();
+            try {
+                const res = await api('/api/auth/otp/request', {
+                    method: 'POST',
+                    body: { email: userEmail }
+                });
+                showAlert('A fresh code has been sent to your email!', true);
+                startCooldown(res.cooldown_seconds || 60);
+                attemptWarning.classList.add('hidden');
+                otpBoxes.forEach(b => b.value = '');
+                otpBoxes[0].focus();
+            } catch (err) {
+                showAlert(err.message || 'Failed to resend code');
+            }
+        });
+
+        // Change Email button
+        document.getElementById('btn-change-email').addEventListener('click', () => {
+            hideAlert();
+            attemptWarning.classList.add('hidden');
+            stepOtp.classList.add('hidden');
+            stepEmail.classList.remove('hidden');
+            otpBoxes.forEach(b => b.value = '');
+            emailInput.focus();
+        });
+
+        // Check URL search params for pre-filled email
+        const urlParams = new URLSearchParams(window.location.search);
+        const prefillEmail = urlParams.get('email');
+        if (prefillEmail) {
+            emailInput.value = prefillEmail;
+            btnSendOtp.focus();
+        }
+    </script>
+</body>
+</html>

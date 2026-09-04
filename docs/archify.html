@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Co-Drive — Archify System Architecture & Diagrams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Mermaid.js with reliable CDN and fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"><\/script>');
+    }
+  </script>
+  <style>
+    :root {
+      --bg-base: #070a11;
+      --bg-surface: #0f172a;
+      --bg-surface-elevated: #1e293b;
+      --border-subtle: rgba(255, 255, 255, 0.12);
+      --border-focus: rgba(99, 102, 241, 0.6);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --brand-primary: #6366f1;
+      --brand-primary-glow: rgba(99, 102, 241, 0.4);
+      --brand-accent: #38bdf8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --header-height: 64px;
+      --sidebar-width: 360px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      height: var(--header-height);
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+      flex-shrink: 0;
+      gap: 16px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      box-shadow: 0 0 18px var(--brand-primary-glow);
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .brand-meta h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-meta p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* View Switcher Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(30, 41, 59, 0.8);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-tab-btn.active {
+      background: var(--brand-primary);
+      color: #fff;
+      box-shadow: 0 0 16px var(--brand-primary-glow);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border: 1px solid rgba(99, 102, 241, 0.7);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 16px var(--brand-primary-glow);
+    }
+
+    /* Main Workspace */
+    .app-workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Canvas Viewport */
+    .viewport-canvas {
+      flex: 1;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, #111b2f 0%, #070a11 100%);
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .viewport-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Grid pattern background */
+    .canvas-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .canvas-toolbar {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 10px;
+      border-radius: 10px;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .tool-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s ease;
+    }
+
+    .tool-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .tool-separator {
+      width: 1px;
+      height: 20px;
+      background: var(--border-subtle);
+      margin: 0 4px;
+    }
+
+    .zoom-level-text {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: #fff;
+      min-width: 54px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .hint-banner {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Pan & Zoom Stage */
+    .pan-zoom-stage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
+      will-change: transform;
+      display: inline-block;
+      pointer-events: none;
+    }
+
+    .mermaid-render-box {
+      pointer-events: auto;
+      display: inline-block;
+      min-width: 1200px;
+    }
+
+    /* FORCED LARGE, CRISP, ULTRA-READABLE SVG TYPOGRAPHY & BOXES */
+    .mermaid-render-box svg {
+      display: block !important;
+      filter: drop-shadow(0 16px 48px rgba(0, 0, 0, 0.8));
+    }
+
+    .mermaid-render-box svg text,
+    .mermaid-render-box svg .nodeLabel,
+    .mermaid-render-box svg .label,
+    .mermaid-render-box svg .edgeLabel,
+    .mermaid-render-box svg .messageText,
+    .mermaid-render-box svg .actor,
+    .mermaid-render-box svg .statediagram-state {
+      font-size: 17px !important;
+      font-weight: 600 !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      fill: #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    .mermaid-render-box svg .subgraph-title {
+      font-size: 19px !important;
+      font-weight: 800 !important;
+      fill: #38bdf8 !important;
+    }
+
+    .mermaid-render-box svg .actor {
+      font-size: 18px !important;
+      font-weight: 700 !important;
+    }
+
+    /* Right Inspector / Specification Drawer */
+    .inspector-panel {
+      width: var(--sidebar-width);
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+      z-index: 20;
+      transition: width 0.2s ease;
+    }
+
+    .inspector-panel.collapsed {
+      width: 0;
+      border-left: none;
+    }
+
+    .inspector-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    .inspector-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .inspector-content {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spec-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .spec-card-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--brand-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .spec-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .spec-value {
+      font-size: 12px;
+      color: #fff;
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.45);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      word-break: break-all;
+    }
+
+    .tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .tag.primary {
+      background: rgba(99, 102, 241, 0.2);
+      color: #c7d2fe;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .tag.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #a7f3d0;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .tag.warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    /* Bottom Info Status Bar */
+    footer {
+      height: 36px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+
+    /* Modal / Source Drawer */
+    .source-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .source-drawer.open {
+      display: flex;
+    }
+
+    .source-modal {
+      width: 100%;
+      max-width: 860px;
+      max-height: 85vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-focus);
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.6);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      background: #070a11;
+    }
+
+    pre code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #f1f5f9;
+      line-height: 1.6;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand-section">
+      <div class="brand-badge">CD</div>
+      <div class="brand-meta">
+        <h1>Co-Drive <span class="badge-pill">Archify Studio</span></h1>
+        <p>Pure-Go SQLite Architecture &amp; System Engine</p>
+      </div>
+    </div>
+
+    <!-- View Switcher -->
+    <nav class="nav-tabs" id="viewTabs">
+      <button class="nav-tab-btn active" data-view="architecture">
+        🏛️ 1. Architecture
+      </button>
+      <button class="nav-tab-btn" data-view="sync-flow">
+        ⚡ 2. Sync Flow
+      </button>
+      <button class="nav-tab-btn" data-view="async-roundtrip">
+        🔄 3. Backup Syncer
+      </button>
+      <button class="nav-tab-btn" data-view="domain-lifecycle">
+        📜 4. Document Lifecycle
+      </button>
+      <button class="nav-tab-btn" data-view="deployment-pipeline">
+        🚀 5. Release Pipeline
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button class="btn" id="btnToggleSidebar" title="Toggle Inspector Sidebar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        Sidebar
+      </button>
+      <button class="btn" id="btnViewSource" title="View & Copy Mermaid Source">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+        Source
+      </button>
+      <button class="btn btn-primary" id="btnExportSvg" title="Export High-Res SVG">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export SVG
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace -->
+  <div class="app-workspace">
+    <!-- Viewport Canvas -->
+    <main class="viewport-canvas" id="canvasViewport">
+      <div class="canvas-grid-bg"></div>
+
+      <!-- Floating Canvas Toolbar -->
+      <div class="canvas-toolbar">
+        <button class="tool-btn" id="btnZoomIn" title="Zoom In (+)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <span class="zoom-level-text" id="zoomLevel">100%</span>
+        <button class="tool-btn" id="btnZoomOut" title="Zoom Out (-)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <div class="tool-separator"></div>
+        <button class="tool-btn" id="btnResetZoom" title="Reset (100%)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+        <button class="tool-btn" id="btnFitScreen" title="Fit Entire Diagram to Screen">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+      </div>
+
+      <!-- Hint banner -->
+      <div class="hint-banner">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Drag canvas to pan &bull; Scroll to zoom (Up to 1000%)</span>
+      </div>
+
+      <!-- Centered Pan & Zoom Stage -->
+      <div class="pan-zoom-stage" id="panZoomStage">
+        <div class="mermaid-render-box" id="renderContainer"></div>
+      </div>
+    </main>
+
+    <!-- Right Inspector / Specification Drawer -->
+    <aside class="inspector-panel" id="inspectorPanel">
+      <div class="inspector-header">
+        <h2 id="inspectorTitle">Architecture Invariants</h2>
+        <span class="badge-pill" id="inspectorBadge">Spec v1.0</span>
+      </div>
+
+      <div class="inspector-content" id="inspectorContent">
+        <!-- Injected via JavaScript -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- Bottom Status Bar -->
+  <footer>
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span>All Invariants Verified &bull; Pure-Go SQLite WAL Mode &bull; CGO_ENABLED=0</span>
+    </div>
+    <div>
+      <span>Co-Drive Engineering &bull; <code>make check</code> Passed</span>
+    </div>
+  </footer>
+
+  <!-- Mermaid Source Modal -->
+  <div class="source-drawer" id="sourceModal">
+    <div class="source-modal">
+      <div class="modal-header">
+        <h3 style="font-size: 14px; font-weight: 700;">Mermaid Specification Source</h3>
+        <button class="tool-btn" id="btnCloseModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre><code id="sourceCodeBlock"></code></pre>
+      </div>
+      <div style="padding: 12px 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 10px; background: rgba(30, 41, 59, 0.4);">
+        <button class="btn" id="btnCopySource">Copy Source</button>
+        <button class="btn btn-primary" id="btnDoneModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Diagrams Dictionary
+    const DIAGRAMS = {
+      "architecture": {
+        title: "High-Level Architecture",
+        mode: "Architecture Mode",
+        badge: "Topology",
+        initialScale: 1.0,
+        spec: `
+          <div class="spec-card">
+            <div class="spec-card-title">🛡️ Trust Boundaries</div>
+            <div class="spec-item">
+              <span class="spec-label">Untrusted Client Zone</span>
+              <span class="spec-value">Web / Mobile / Browser Client</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Security Middlewares</span>
+              <span class="spec-value">Rate Limit + CSRF + Session Auth</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Domain Layer</span>
+              <span class="spec-value">Chi Router + Handlers + Pure Go Services</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Persistence Boundary</span>
+              <span class="spec-value">modernc.org/sqlite (WAL Mode)</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">⚡ Storage Invariants</div>
+            <div class="spec-item">
+              <span class="spec-label">Concurrency Model</span>
+              <span class="spec-value">Concurrent Readers + Serialized Writer</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Pragmas</span>
+              <span class="spec-value">journal_mode=WAL; busy_timeout=5000</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">📦 Key Modules</div>
+            <div class="tag-group">
+              <span class="tag primary">cmd/server</span>
+              <span class="tag primary">internal/auth</span>
+              <span class="tag primary">internal/vehicles</span>
+              <span class="tag success">pkg/gdrive</span>
+              <span class="tag success">pkg/database</span>
+              <span class="tag">pkg/response</span>
+            </div>
+          </div>
+        `,
+        code: `flowchart TD
+    subgraph ClientZone["Client Zone (Untrusted Public Network)"]
+        Client["Web Browser / Mobile App<br/>Role: User Agent<br/>Protocols: HTTPS, JSON"]
+    end
+
+    subgraph SecurityBoundary["Security & Ingress Boundary (HTTP Layer)"]
+        Router["HTTP Chi Router<br/>Path: cmd/server/router.go<br/>Features: Route multiplexing, Context propagation"]
+        
+        subgraph Middlewares["Middleware Pipeline"]
+            MW_Rate["Rate Limiter<br/>Engine: Token Bucket (100 req/min/IP)<br/>Action: 429 Too Many Requests"]
+            MW_CSRF["CSRF Protection<br/>Method: Double-Submit Cookie<br/>Header: X-CSRF-Token"]
+            MW_Auth["Session Authenticator<br/>Cookie: session_id (HttpOnly, Lax)<br/>Action: Context Injection / 401"]
+        end
+    end
+
+    subgraph DomainCore["Domain Core (Application & Business Layer)"]
+        H_Auth["Auth Handlers<br/>Path: internal/auth/<br/>Features: Bcrypt, Email OTP, Password Reset"]
+        H_Vehicles["Vehicles & Logistics Handler<br/>Path: internal/vehicles/<br/>Features: Fleet CRUD, Ownership Gates (ownsVehicle)"]
+        
+        S_Logic["In-Memory Derivation Engine<br/>Path: internal/vehicles/models.go<br/>Calculations: Fuel Efficiency (km/L), Document Expiry"]
+        S_Email["Email Dispatch Service<br/>Path: pkg/email/<br/>Features: Transactional HTML/OTP Templates"]
+    end
+
+    subgraph DataStorage["Persistence Layer (Storage Boundary)"]
+        Repo_Layer["Repository Aggregator<br/>Path: internal/*/repository.go<br/>Entities: Users, Sessions, Vehicles, Fuel/Mileage Logs"]
+        DB_SQLite[("Pure-Go SQLite Database<br/>Engine: modernc.org/sqlite<br/>Mode: WAL Mode (Concurrent Reads, Serialized Write)<br/>Pragmas: busy_timeout=5000, foreign_keys=ON")]
+    end
+
+    subgraph AsyncWorkerBoundary["Background Workers (Isolated Goroutines)"]
+        Worker_GDrive["Google Drive Backup Syncer<br/>Path: pkg/gdrive/syncer.go<br/>Mechanism: Lock-free VACUUM INTO Snapshot<br/>Schedule: Configurable Cron Ticker"]
+    end
+
+    subgraph ExternalServices["External Cloud Dependencies"]
+        Ext_GDrive["Google Drive Cloud<br/>API: Drive API v3<br/>Auth: GCP Service Account JSON Key"]
+        Ext_SMTP["SMTP Mail Relay<br/>Protocol: RFC 5321 SMTP / TLS<br/>Port: 1025 / 587"]
+    end
+
+    Client -->|1. HTTPS Request + Cookie / CSRF| Router
+    Router --> Middlewares
+    Middlewares --> H_Auth
+    Middlewares --> H_Vehicles
+    H_Auth --> S_Email
+    H_Auth --> Repo_Layer
+    H_Vehicles --> S_Logic
+    H_Vehicles --> Repo_Layer
+    Repo_Layer --> DB_SQLite
+    S_Email -.->|SMTP TLS| Ext_SMTP
+    Worker_GDrive -->|Lock-Free Snapshot| DB_SQLite
+    Worker_GDrive -.->|Multipart Upload| Ext_GDrive`
+      },
+
+      "sync-flow": {
+        title: "Synchronous Request Flow",
+        mode: "Sequence Mode",
+        badge: "Sub-Resource Gate",
+        initialScale: 1.0,
+        spec: `
+          <div class="spec-card">
+            <div class="spec-card-title">🔒 Anti-Enumeration Invariant</div>
+            <div class="spec-item">
+              <span class="spec-label">Sub-Resource Ownership</span>
+              <span class="spec-value">ownsVehicle(w, r, vehicleID, userID)</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Unauthorized Access Behavior</span>
+              <span class="spec-value">HTTP 404 Not Found (Never 403)</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">🧮 In-Memory Derivation</div>
+            <div class="spec-item">
+              <span class="spec-label">Dynamic Efficiency</span>
+              <span class="spec-value">&Delta;km / &Delta;Litres calculated on read</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">No Stale Columns</span>
+              <span class="spec-value">Pure mathematical runtime hydration</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">📊 Envelope Standards</div>
+            <div class="tag-group">
+              <span class="tag success">200 OK: { data, success: true }</span>
+              <span class="tag warning">401 Unauthorized</span>
+              <span class="tag warning">404 Not Found</span>
+              <span class="tag">429 Rate Limit</span>
+            </div>
+          </div>
+        `,
+        code: `sequenceDiagram
+    autonumber
+    actor User as Client Browser
+    participant Router as HTTP Router (Chi)
+    participant RateLimit as Rate Limiter
+    participant CSRF as CSRF Middleware
+    participant AuthMW as Auth Middleware
+    participant VH as Vehicle Handler
+    participant VRepo as Vehicle Repository
+    participant SQLite as SQLite DB (WAL)
+    participant Derivation as Metric Engine
+    participant Telemetry as Telemetry/Logger
+
+    User->>Router: GET /api/vehicles/v-123/fuel (Cookie: session_id)
+    activate Router
+
+    Router->>RateLimit: Check Token Bucket (Client IP)
+    alt Rate Limit Exceeded
+        RateLimit-->>User: 429 Too Many Requests { error: rate_limit_exceeded }
+    else Within Quota
+        RateLimit->>CSRF: Validate CSRF Token
+        Note over CSRF: Safe method (GET) - Bypass CSRF verification
+        CSRF->>AuthMW: Authenticate Request
+
+        AuthMW->>SQLite: Query Session by Token (session_id)
+        alt Session Cache/DB Miss or Expired
+            SQLite-->>AuthMW: sql.ErrNoRows / Expired
+            AuthMW-->>User: 401 Unauthorized { error: unauthorized }
+        else Session Valid
+            SQLite-->>AuthMW: Active Session { UserID: u-999 }
+            AuthMW->>VH: Route to GetVehicleFuelLogs(ctx with UserID)
+            activate VH
+
+            VH->>VRepo: Verify Ownership ownsVehicle(v-123, u-999)
+            VRepo->>SQLite: SELECT 1 FROM vehicles WHERE id=v-123 AND user_id=u-999
+            
+            alt Vehicle Not Found or Not Owned (Anti-Enumeration Guard)
+                SQLite-->>VRepo: 0 Rows
+                VRepo-->>VH: ErrNotFound
+                VH-->>User: 404 Not Found { error: vehicle not found }
+            else Ownership Verified
+                SQLite-->>VRepo: Match Confirmed
+                VH->>VRepo: GetFuelLogsByVehicleID(v-123)
+                VRepo->>SQLite: SELECT * FROM fuel_logs WHERE vehicle_id=v-123 ORDER BY logged_at ASC
+                SQLite-->>VRepo: FuelLog records
+                VRepo-->>VH: Raw Fuel Log entities
+
+                VH->>Derivation: ApplyDerived(fuelLogs)
+                activate Derivation
+                Note over Derivation: Compute Efficiency = Delta(km) / Delta(Litres)
+                Derivation-->>VH: Enriched FuelLogs with Efficiency Metrics
+                deactivate Derivation
+
+                VH-->>Router: Standard JSON Envelope (200 OK)
+                Router-->>User: HTTP 200 OK { data: [...], success: true }
+                
+                par Asynchronous Telemetry Emission
+                    Router-)Telemetry: Emit structured audit log (req_id, duration_ms, status=200)
+                end
+            end
+            deactivate VH
+        end
+    end
+    deactivate Router`
+      },
+
+      "async-roundtrip": {
+        title: "Asynchronous Backup Syncer",
+        mode: "Sequence Mode",
+        badge: "Resilience & DR",
+        initialScale: 1.0,
+        spec: `
+          <div class="spec-card">
+            <div class="spec-card-title">☁️ Google Drive Backup</div>
+            <div class="spec-item">
+              <span class="spec-label">Snapshot Method</span>
+              <span class="spec-value">SQLite VACUUM INTO 'backup.db'</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Zero Lock Contention</span>
+              <span class="spec-value">WAL point-in-time consistency</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Target Cloud</span>
+              <span class="spec-value">Google Drive API v3 (Files.Create)</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">🔁 Retry Policy</div>
+            <div class="spec-item">
+              <span class="spec-label">Max Retries</span>
+              <span class="spec-value">3 Exponential Backoff (2s, 4s, 8s)</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Failure Handling</span>
+              <span class="spec-value">Dead-Letter / Non-blocking WARN log</span>
+            </div>
+          </div>
+        `,
+        code: `sequenceDiagram
+    autonumber
+    participant Ticker as Ticker / API Trigger
+    participant Worker as GDrive Backup Syncer
+    participant SQLite as SQLite DB (WAL Mode)
+    participant TempFS as Local Scratch Disk (/tmp)
+    participant GDriveAPI as Google Drive API v3
+    participant AlertSink as SRE Alerting / Log Sink
+
+    Ticker->>Worker: Ticker Fired / BackupNow(ctx)
+    activate Worker
+
+    Worker->>Worker: Check Enabled & DriveService != nil
+    
+    rect rgb(30, 41, 59)
+        Note over Worker,SQLite: Phase 1: Point-in-Time Lock-Free Snapshot
+        Worker->>SQLite: ExecContext("VACUUM INTO /tmp/backup.db")
+        activate SQLite
+        Note over SQLite: SQLite creates atomic bit-for-bit snapshot<br/>without blocking concurrent WAL readers/writers
+        SQLite-->>Worker: Snapshot Generated (0 Lock Contention)
+        deactivate SQLite
+    end
+
+    rect rgb(15, 23, 42)
+        Note over Worker,GDriveAPI: Phase 2: Multipart Streaming Upload & Resilience Loop
+        Worker->>TempFS: Open snapshot file descriptor
+        
+        loop Retry Loop (Max Retries: 3, Backoff: 2s, 4s, 8s)
+            Worker->>GDriveAPI: Files.Create(driveFile).Media(fileStream).Do()
+            activate GDriveAPI
+            
+            alt Network Timeout / 503 Service Unavailable
+                GDriveAPI-->>Worker: HTTP 503 / i/o timeout
+                Note over Worker: Log WARN: Retrying upload in backoff interval...
+            else Successful Upload
+                GDriveAPI-->>Worker: HTTP 200 OK { id: gdrive-file-id-987, name: backup.db }
+                deactivate GDriveAPI
+            end
+        end
+    end
+
+    alt Upload Succeeded
+        Worker->>TempFS: os.Remove(/tmp/backup.db)
+        Worker->>AlertSink: Emit INFO log: "[GDRIVE SUCCESS] Snapshot uploaded. File ID: 987"
+    else Retry Limit Exhausted (Failure Path)
+        Worker->>TempFS: os.Remove(/tmp/backup.db)
+        Worker->>AlertSink: Emit ERROR / Dead-Letter Alert: "[GDRIVE ERROR] Backup failed after 3 retries"
+    end
+
+    Worker-->>Ticker: Syncer Sleep until next tick (interval_minutes=60)
+    deactivate Worker`
+      },
+
+      "domain-lifecycle": {
+        title: "Vehicle Document Lifecycle",
+        mode: "Lifecycle Mode",
+        badge: "Compliance Invariant",
+        initialScale: 1.0,
+        spec: `
+          <div class="spec-card">
+            <div class="spec-card-title">📜 Document Types</div>
+            <div class="tag-group">
+              <span class="tag primary">PUC (Pollution Certificate)</span>
+              <span class="tag success">INSURANCE (Motor Policy)</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">⏱️ Expiry Threshold Formulas</div>
+            <div class="spec-item">
+              <span class="spec-label">VALID</span>
+              <span class="spec-value">ExpiresAt &gt; Today + 30 Days</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">EXPIRING_SOON</span>
+              <span class="spec-value">Today &lt; ExpiresAt &le; Today + 30 Days</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">EXPIRED</span>
+              <span class="spec-value">ExpiresAt &le; Today</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">🗑️ Terminal Transitions</div>
+            <div class="spec-item">
+              <span class="spec-label">Superseded</span>
+              <span class="spec-value">Replacement policy uploaded</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Cascade Deleted</span>
+              <span class="spec-value">Vehicle removal cascades</span>
+            </div>
+          </div>
+        `,
+        code: `stateDiagram-v2
+    [*] --> DraftCreated: POST /api/vehicles/id/documents
+    
+    DraftCreated --> Valid: Document Registered (ExpiresAt > Today + 30d)
+    
+    Valid --> ExpiringSoon: Expiry Window Entered (Today < ExpiresAt <= Today + 30d)
+    ExpiringSoon --> Valid: Policy Renewed (New Expiration Date)
+    
+    ExpiringSoon --> Expired: Expiration Date Passed (ExpiresAt <= Today)
+    Expired --> Valid: Re-certified / Replacement Uploaded
+    
+    Valid --> SupersededArchived: Newer Document Replaced
+    ExpiringSoon --> SupersededArchived: Newer Document Replaced
+    Expired --> SupersededArchived: Replacement Registered
+    
+    Valid --> Deleted: DELETE /api/vehicles/id/documents/docId
+    ExpiringSoon --> Deleted: Cascade / User Deletion
+    Expired --> Deleted: Cascade / User Deletion
+    SupersededArchived --> Deleted: System Purge
+    
+    SupersededArchived --> [*]
+    Deleted --> [*]`
+      },
+
+      "deployment-pipeline": {
+        title: "Deployment & Release Pipeline",
+        mode: "Lifecycle Mode",
+        badge: "CI/CD & Gates",
+        initialScale: 1.0,
+        spec: `
+          <div class="spec-card">
+            <div class="spec-card-title">🚦 Verification Gates</div>
+            <div class="spec-item">
+              <span class="spec-label">Static Analysis</span>
+              <span class="spec-value">go vet ./...</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Isolated Tests</span>
+              <span class="spec-value">go test -v ./...</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Binary Build</span>
+              <span class="spec-value">CGO_ENABLED=0 go build bin/server</span>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-title">🏥 Healthcheck Invariant</div>
+            <div class="spec-item">
+              <span class="spec-label">Probe Endpoint</span>
+              <span class="spec-value">GET /health (HTTP 200 OK)</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Timeout / Retries</span>
+              <span class="spec-value">5s interval &bull; 3x failure triggers rollback</span>
+            </div>
+          </div>
+        `,
+        code: `stateDiagram-v2
+    [*] --> Queued: Release Triggered / Git Push
+    
+    Queued --> Building: Concurrency Runner Acquired
+    Building --> BuildFailed: Syntax Error / Missing Dependency
+    
+    Building --> VerifyingTesting: Static Binaries Compiled Cleanly
+    VerifyingTesting --> TestFailed: Vet Violation / Test Broken
+    
+    VerifyingTesting --> WaitingApproval: make check Gate 100% Passed
+    WaitingApproval --> Aborted: Operator Sign-off Rejected
+    
+    WaitingApproval --> PromotingCanary: Approved for Deployment
+    PromotingCanary --> RollingBack: Health Check Failed (3x Timeout)
+    PromotingCanary --> Deployed: Health Probe Passed (200 OK)
+    
+    RollingBack --> RolledBack: Previous Stable Image Restored
+    
+    Deployed --> [*]
+    RolledBack --> [*]
+    BuildFailed --> Failed: Build Error
+    TestFailed --> Failed: Test Error
+    Failed --> [*]
+    Aborted --> [*]`
+      }
+    };
+
+    // State Variables
+    let currentView = "architecture";
+    let zoom = 1.0;
+    let isPanning = false;
+    let startX = 0, startY = 0;
+    let panX = 0, panY = 0;
+
+    // Cache of rendered SVGs
+    const svgCache = {};
+
+    // DOM Elements
+    let container, stage, viewport, zoomLevelEl, inspectorTitle, inspectorBadge, inspectorContent, inspectorPanel;
+
+    function initMermaid() {
+      if (typeof mermaid !== 'undefined') {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          securityLevel: 'loose',
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          themeVariables: {
+            darkMode: true,
+            background: '#070a11',
+            primaryColor: '#6366f1',
+            primaryTextColor: '#ffffff',
+            primaryBorderColor: '#818cf8',
+            lineColor: '#38bdf8',
+            secondaryColor: '#1e293b',
+            tertiaryColor: '#0f172a',
+            fontSize: '18px'
+          }
+        });
+      }
+    }
+
+    // Force SVG to expand to its native crisp viewBox dimensions
+    function enhanceSvgDimensions(svgEl) {
+      if (!svgEl) return;
+      
+      const viewBox = svgEl.viewBox ? svgEl.viewBox.baseVal : null;
+      let width = viewBox && viewBox.width > 0 ? viewBox.width : svgEl.getBoundingClientRect().width;
+      let height = viewBox && viewBox.height > 0 ? viewBox.height : svgEl.getBoundingClientRect().height;
+
+      // Ensure minimum comfortable size
+      if (width < 1200) {
+        const factor = 1200 / (width || 1);
+        width = 1200;
+        height = height * factor;
+      }
+
+      svgEl.setAttribute("width", `${width}px`);
+      svgEl.setAttribute("height", `${height}px`);
+      svgEl.style.width = `${width}px`;
+      svgEl.style.height = `${height}px`;
+      svgEl.style.maxWidth = "none";
+    }
+
+    // Render Diagram
+    async function renderView(viewKey) {
+      currentView = viewKey;
+      const data = DIAGRAMS[viewKey];
+      if (!data) return;
+
+      // Update Inspector Sidebar
+      inspectorTitle.innerText = data.title;
+      inspectorBadge.innerText = data.mode;
+      inspectorContent.innerHTML = data.spec;
+
+      // Check cache first for instant tab switching
+      if (svgCache[viewKey]) {
+        container.innerHTML = svgCache[viewKey];
+        const svgEl = container.querySelector("svg");
+        enhanceSvgDimensions(svgEl);
+        fitToScreen();
+        return;
+      }
+
+      container.innerHTML = `<div style="color: var(--text-muted); padding: 40px; font-family: monospace; font-size: 14px;">Rendering diagram...</div>`;
+
+      try {
+        if (typeof mermaid === 'undefined') {
+          throw new Error("Mermaid library is loading. Please retry in a second.");
+        }
+
+        const id = `svg-${viewKey}-${Math.floor(Math.random()*100000)}`;
+        const { svg } = await mermaid.render(id, data.code);
+        svgCache[viewKey] = svg;
+        container.innerHTML = svg;
+        
+        const svgEl = container.querySelector("svg");
+        enhanceSvgDimensions(svgEl);
+      } catch (err) {
+        console.error("Render Error:", err);
+        container.innerHTML = `
+          <div style="color: #ef4444; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 24px; font-family: monospace; max-width: 600px;">
+            <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px;">⚠️ Render Issue Detected</div>
+            <div style="font-size: 12px; color: #fca5a5; margin-bottom: 12px;">${err.message || err}</div>
+            <button class="btn btn-primary" onclick="renderView('${viewKey}')">Retry</button>
+          </div>`;
+      }
+
+      fitToScreen();
+    }
+
+    function updateTransform() {
+      stage.style.transform = `translate(-50%, -50%) translate(${panX}px, ${panY}px) scale(${zoom})`;
+      zoomLevelEl.innerText = `${Math.round(zoom * 100)}%`;
+    }
+
+    function resetPosition() {
+      zoom = 1.0;
+      panX = 0;
+      panY = 0;
+      updateTransform();
+    }
+
+    function fitToScreen() {
+      const svg = container.querySelector("svg");
+      if (!svg) return;
+
+      const vpRect = viewport.getBoundingClientRect();
+      const svgWidth = parseFloat(svg.getAttribute("width")) || svg.getBoundingClientRect().width || 1200;
+      const svgHeight = parseFloat(svg.getAttribute("height")) || svg.getBoundingClientRect().height || 800;
+
+      const availWidth = vpRect.width - 100;
+      const availHeight = vpRect.height - 100;
+
+      if (availWidth > 0 && availHeight > 0 && svgWidth > 0 && svgHeight > 0) {
+        const scaleX = availWidth / svgWidth;
+        const scaleY = availHeight / svgHeight;
+        // Comfortable zoom level to fill viewport nicely
+        zoom = Math.min(Math.max(Math.min(scaleX, scaleY), 0.5), 2.5);
+      } else {
+        zoom = 1.0;
+      }
+      
+      panX = 0;
+      panY = 0;
+      updateTransform();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      container = document.getElementById("renderContainer");
+      stage = document.getElementById("panZoomStage");
+      viewport = document.getElementById("canvasViewport");
+      zoomLevelEl = document.getElementById("zoomLevel");
+      inspectorTitle = document.getElementById("inspectorTitle");
+      inspectorBadge = document.getElementById("inspectorBadge");
+      inspectorContent = document.getElementById("inspectorContent");
+      inspectorPanel = document.getElementById("inspectorPanel");
+
+      initMermaid();
+
+      // Navigation Tab Switching
+      document.querySelectorAll(".nav-tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".nav-tab-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderView(btn.getAttribute("data-view"));
+        });
+      });
+
+      // Zoom Controls (50% to 1000%)
+      document.getElementById("btnZoomIn").addEventListener("click", () => {
+        zoom = Math.min(zoom + 0.25, 10.0);
+        updateTransform();
+      });
+
+      document.getElementById("btnZoomOut").addEventListener("click", () => {
+        zoom = Math.max(zoom - 0.25, 0.2);
+        updateTransform();
+      });
+
+      document.getElementById("btnResetZoom").addEventListener("click", () => {
+        resetPosition();
+      });
+
+      document.getElementById("btnFitScreen").addEventListener("click", () => {
+        fitToScreen();
+      });
+
+      // Sidebar Toggle
+      document.getElementById("btnToggleSidebar").addEventListener("click", () => {
+        inspectorPanel.classList.toggle("collapsed");
+        setTimeout(fitToScreen, 220);
+      });
+
+      // Pan Handlers
+      viewport.addEventListener("mousedown", e => {
+        if (e.target.closest(".canvas-toolbar") || e.target.closest(".hint-banner")) return;
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+      });
+
+      window.addEventListener("mousemove", e => {
+        if (!isPanning) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        updateTransform();
+      });
+
+      window.addEventListener("mouseup", () => {
+        isPanning = false;
+      });
+
+      // Smooth Wheel Zoom (up to 1000%)
+      viewport.addEventListener("wheel", e => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        zoom = Math.min(Math.max(zoom + delta, 0.2), 10.0);
+        updateTransform();
+      }, { passive: false });
+
+      // Window Resize
+      window.addEventListener("resize", () => {
+        fitToScreen();
+      });
+
+      // Source Modal Controls
+      const modal = document.getElementById("sourceModal");
+      const sourceCodeBlock = document.getElementById("sourceCodeBlock");
+
+      document.getElementById("btnViewSource").addEventListener("click", () => {
+        sourceCodeBlock.innerText = DIAGRAMS[currentView].code;
+        modal.classList.add("open");
+      });
+
+      document.getElementById("btnCloseModal").addEventListener("click", () => modal.classList.remove("open"));
+      document.getElementById("btnDoneModal").addEventListener("click", () => modal.classList.remove("open"));
+
+      document.getElementById("btnCopySource").addEventListener("click", () => {
+        navigator.clipboard.writeText(DIAGRAMS[currentView].code);
+        alert("Mermaid source copied to clipboard!");
+      });
+
+      // Export SVG
+      document.getElementById("btnExportSvg").addEventListener("click", () => {
+        const svgEl = container.querySelector("svg");
+        if (!svgEl) return;
+        const svgData = new XMLSerializer().serializeToString(svgEl);
+        const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `co-drive-${currentView}.svg`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Initial Render
+      renderView("architecture");
+    });
+  </script>
+</body>
+</html>

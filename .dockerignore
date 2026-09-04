@@ -1,0 +1,24 @@
+# Keeps secrets and local state out of the build context so they can never
+# end up baked into an image layer, and keeps the context small.
+.git/
+.github/
+
+.env
+!.env.example
+data.db*
+service_account.json
+
+bin/
+*.test
+coverage.out
+
+.vscode/
+.idea/
+.DS_Store
+
+.agents/
+.codegraph/
+.claude/
+
+node_modules/
+*.pdf
