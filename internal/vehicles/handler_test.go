@@ -129,3 +129,47 @@ func TestUpdateAndDeleteMileageEntry(t *testing.T) {
 		t.Errorf("owner delete got %d, want 200: %s", w.Code, w.Body.String())
 	}
 }
+
+func TestUpdateVehicleEndpoint(t *testing.T) {
+	db := database.SetupTestDB(t)
+
+	if _, err := db.Exec(`INSERT INTO users (id, email) VALUES ('owner', 'owner@example.com'), ('attacker', 'attacker@example.com');`); err != nil {
+		t.Fatalf("failed to seed users: %v", err)
+	}
+
+	repo := NewRepository(db)
+	v := &Vehicle{UserID: "owner", Name: "Honda City", Make: "Honda", Model: "City", Year: 2022, LicensePlate: "DL01AB1234"}
+	if err := repo.CreateVehicle(context.Background(), v); err != nil {
+		t.Fatalf("failed to create vehicle: %v", err)
+	}
+
+	h := NewHandler(repo)
+	r := chi.NewRouter()
+	r.Put("/api/vehicles/{id}", h.UpdateVehicle)
+
+	// Attacker tries to update -> 500 / error (access denied)
+	req := httptest.NewRequest(http.MethodPut, "/api/vehicles/"+v.ID, strings.NewReader(`{"name":"Hacked Vehicle","make":"Fake"}`))
+	req = req.WithContext(session.WithSession(req.Context(), &session.Session{ID: "s2", UserID: "attacker"}))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code == http.StatusOK {
+		t.Errorf("attacker vehicle update expected error, got 200 OK")
+	}
+
+	// Owner updates -> 200 OK
+	req = httptest.NewRequest(http.MethodPut, "/api/vehicles/"+v.ID, strings.NewReader(`{"name":"City Pro","make":"Honda","model":"City ZX","year":2024,"license_plate":"DL01XX9999"}`))
+	req = req.WithContext(session.WithSession(req.Context(), &session.Session{ID: "s1", UserID: "owner"}))
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("owner vehicle update got %d, want 200: %s", w.Code, w.Body.String())
+	}
+
+	updated, err := repo.GetVehicleByID(context.Background(), v.ID, "owner")
+	if err != nil || updated == nil {
+		t.Fatalf("failed to get updated vehicle: %v", err)
+	}
+	if updated.Name != "City Pro" || updated.LicensePlate != "DL01XX9999" {
+		t.Errorf("got name=%q plate=%q, want 'City Pro', 'DL01XX9999'", updated.Name, updated.LicensePlate)
+	}
+}

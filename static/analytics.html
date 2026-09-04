@@ -665,6 +665,145 @@
             max-width: 480px;
             margin: 0 auto 20px;
         }
+
+        /* Vehicle Overview Banner */
+        .vehicle-details-banner {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-subtle);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .vehicle-banner-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .vehicle-banner-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vehicle-banner-title h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .vehicle-banner-meta {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .vehicle-banner-docs {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn-delete {
+            color: #DC2626;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete:hover {
+            color: #991B1B;
+            text-decoration: underline;
+        }
+
+        /* Preset & State Pills */
+        .preset-section {
+            margin-bottom: 16px;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+        }
+
+        .preset-label {
+            display: block;
+            font-size: 0.725rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .preset-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .pill-btn {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            padding: 5px 11px;
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pill-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #EFF6FF;
+            transform: translateY(-1px);
+        }
+
+        .state-pills {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .state-pill-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-right: 2px;
+        }
+
+        .state-pill {
+            background: #F1F5F9;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.725rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.12s ease;
+        }
+
+        .state-pill:hover {
+            background: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+        }
     </style>
 </head>
 
@@ -695,9 +834,8 @@
     <main>
         <div class="page-header">
             <div>
-                <h1 class="page-title">Mileage & Performance Analytics</h1>
-                <p class="page-subtitle" id="selected-vehicle-subtitle">Analyze historical odometer readings and fuel
-                    efficiency trends.</p>
+                <h1 class="page-title" id="page-main-title">Vehicle Details & Analytics</h1>
+                <p class="page-subtitle" id="selected-vehicle-subtitle">View vehicle specs, manage details, and track mileage performance.</p>
             </div>
             <div class="page-controls">
                 <div class="vehicle-select-wrapper">
@@ -711,6 +849,25 @@
         </div>
 
         <div id="analytics-content" style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- Selected Vehicle Overview & Edit Card -->
+            <div id="vehicle-details-banner" class="vehicle-details-banner">
+                <div class="vehicle-banner-info">
+                    <div class="vehicle-banner-title">
+                        <h2 id="banner-v-name">Vehicle Name</h2>
+                        <span id="banner-v-plate" class="plate-badge">--</span>
+                    </div>
+                    <div class="vehicle-banner-meta" id="banner-v-meta">
+                        Make • Model • Year
+                    </div>
+                    <div class="vehicle-banner-docs" id="banner-v-docs">
+                        <!-- Hydrated via JS -->
+                    </div>
+                </div>
+                <div class="vehicle-banner-actions">
+                    <button class="btn-secondary" onclick="openEditVehicleModal()">✏️ Edit Vehicle Details</button>
+                </div>
+            </div>
+
             <!-- KPI Summary Cards -->
             <div class="analytics-kpi-grid" id="analytics-kpis">
                 <!-- Populated via JS -->
@@ -766,6 +923,69 @@
         </div>
     </main>
 
+    <!-- Edit Vehicle Modal -->
+    <div id="edit-vehicle-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Edit Vehicle Details</h3>
+                <button class="btn-close" onclick="closeModal('edit-vehicle-modal')">&times;</button>
+            </div>
+            <form id="edit-vehicle-form">
+                <!-- Popular Indian Vehicle Presets -->
+                <div class="preset-section">
+                    <label class="preset-label">⚡ Quick Presets (Popular in India)</label>
+                    <div class="preset-pills">
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Honda City', 'Honda City', '2024', 'DL 01 AB 1234')">🚗 Honda City</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Creta', 'Hyundai Creta', '2024', 'MH 02 CD 5678')">🚗 Creta</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Swift', 'Maruti Suzuki Swift', '2023', 'KA 05 EF 9012')">🚗 Swift</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Nexon EV', 'Tata Nexon EV', '2024', 'HR 26 GH 3456')">⚡ Nexon EV</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Thar', 'Mahindra Thar 4x4', '2024', 'UP 16 JK 7890')">🚙 Thar</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Classic 350', 'Royal Enfield Classic 350', '2023', 'DL 04 LM 1122')">🏍️ Classic 350</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Activa 6G', 'Honda Activa 6G', '2024', 'MH 12 NP 3344')">🛵 Activa</button>
+                        <button type="button" class="pill-btn" onclick="applyEditPreset('Jupiter', 'TVS Jupiter 125', '2023', 'KA 01 RS 5566')">🛵 Jupiter</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-v-name">Vehicle Nickname</label>
+                    <input type="text" id="edit-v-name" required placeholder="e.g. Daily Honda City">
+                </div>
+                <div class="form-group">
+                    <label for="edit-v-make">Make & Model</label>
+                    <input type="text" id="edit-v-make" placeholder="e.g. Honda Civic">
+                </div>
+                <div class="form-group">
+                    <label for="edit-v-year">Year</label>
+                    <input type="number" id="edit-v-year" min="1950" max="2035" value="2024">
+                </div>
+                <div class="form-group">
+                    <label for="edit-v-plate">License Plate</label>
+                    <input type="text" id="edit-v-plate" placeholder="e.g. DL 01 AB 1234">
+                    <div class="state-pills">
+                        <span class="state-pill-title">India State Codes:</span>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('DL')">DL</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('MH')">MH</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('KA')">KA</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('HR')">HR</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('UP')">UP</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('GJ')">GJ</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('TN')">TN</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('KL')">KL</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('TS')">TS</button>
+                        <button type="button" class="state-pill" onclick="setEditPlatePrefix('WB')">WB</button>
+                    </div>
+                </div>
+                <div class="modal-actions" style="justify-content: space-between;">
+                    <button type="button" class="btn-text btn-delete" onclick="deleteActiveVehicle()">🗑️ Delete Vehicle</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-secondary" onclick="closeModal('edit-vehicle-modal')">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Mileage / Fuel Log Modal (Add & Edit) -->
     <div id="log-modal" class="modal-overlay">
         <div class="modal-card">
@@ -788,8 +1008,8 @@
                     <input type="number" id="modal-litres" min="0" step="0.1" placeholder="e.g. 35.5">
                 </div>
                 <div class="form-group">
-                    <label for="modal-cost">Cost ($ - Optional)</label>
-                    <input type="number" id="modal-cost" min="0" step="0.01" placeholder="e.g. 45.00">
+                    <label for="modal-cost">Cost (₹ - Optional)</label>
+                    <input type="number" id="modal-cost" min="0" step="0.01" placeholder="e.g. 500">
                 </div>
                 <div class="form-group">
                     <label for="modal-notes">Notes (Optional)</label>
@@ -908,8 +1128,92 @@
             }
         }
 
+        function updateVehicleBanner(v) {
+            document.getElementById('banner-v-name').textContent = v.name;
+            const plateEl = document.getElementById('banner-v-plate');
+            if (v.license_plate) {
+                plateEl.textContent = v.license_plate;
+                plateEl.style.display = 'inline-block';
+            } else {
+                plateEl.style.display = 'none';
+            }
+
+            const metaParts = [];
+            if (v.make) metaParts.push(v.make);
+            if (v.model) metaParts.push(v.model);
+            if (v.year && v.year > 0) metaParts.push(`Year: ${v.year}`);
+            document.getElementById('banner-v-meta').textContent = metaParts.join(' • ') || 'No make or model specified';
+
+            // Hydrate Document Pills
+            const docsEl = document.getElementById('banner-v-docs');
+            let pucPill = `<span class="metric-pill pill-error">📄 PUC: Missing</span>`;
+            if (v.puc && v.puc.expiry_date) {
+                if (v.puc.is_expired) pucPill = `<span class="metric-pill pill-error">⚠️ PUC Expired</span>`;
+                else if (v.puc.days_remaining <= 30) pucPill = `<span class="metric-pill pill-warning">⏳ PUC (${v.puc.days_remaining}d left)</span>`;
+                else pucPill = `<span class="metric-pill pill-valid">✓ PUC Valid</span>`;
+            }
+
+            let insPill = `<span class="metric-pill pill-error">🛡️ Insurance: Missing</span>`;
+            if (v.insurance && v.insurance.expiry_date) {
+                if (v.insurance.is_expired) insPill = `<span class="metric-pill pill-error">⚠️ Ins. Expired</span>`;
+                else if (v.insurance.days_remaining <= 30) insPill = `<span class="metric-pill pill-warning">⏳ Ins. (${v.insurance.days_remaining}d left)</span>`;
+                else insPill = `<span class="metric-pill pill-valid">✓ Ins. Valid</span>`;
+            }
+
+            docsEl.innerHTML = pucPill + insPill;
+        }
+
+        function openEditVehicleModal() {
+            if (!activeVehicle) return;
+            document.getElementById('edit-v-name').value = activeVehicle.name || '';
+            document.getElementById('edit-v-make').value = (activeVehicle.make || '') + (activeVehicle.model ? ' ' + activeVehicle.model : '');
+            document.getElementById('edit-v-year').value = activeVehicle.year || 2024;
+            document.getElementById('edit-v-plate').value = activeVehicle.license_plate || '';
+            openModal('edit-vehicle-modal');
+        }
+
+        function applyEditPreset(name, make, year, plate) {
+            document.getElementById('edit-v-name').value = name;
+            document.getElementById('edit-v-make').value = make;
+            document.getElementById('edit-v-year').value = year;
+            if (!document.getElementById('edit-v-plate').value) {
+                document.getElementById('edit-v-plate').value = plate;
+            }
+        }
+
+        function setEditPlatePrefix(prefix) {
+            const input = document.getElementById('edit-v-plate');
+            let val = input.value.trim();
+            if (!val) {
+                input.value = prefix + ' 01 ';
+            } else {
+                const parts = val.split(' ');
+                if (parts.length > 0 && parts[0].length === 2 && parts[0] === parts[0].toUpperCase()) {
+                    parts[0] = prefix;
+                    input.value = parts.join(' ');
+                } else {
+                    input.value = prefix + ' ' + val;
+                }
+            }
+            input.focus();
+        }
+
+        async function deleteActiveVehicle() {
+            if (!activeVehicle) return;
+            if (!confirm(`Are you sure you want to delete "${activeVehicle.name}" from your garage?`)) return;
+            try {
+                await api(`/api/vehicles/${activeVehicle.id}`, { method: 'DELETE' });
+                closeModal('edit-vehicle-modal');
+                showToast('Vehicle deleted successfully');
+                await loadData();
+            } catch (err) {
+                showToast(err.message || 'Failed to delete vehicle');
+            }
+        }
+
         function selectVehicle(v) {
             activeVehicle = v;
+            updateVehicleBanner(v);
             document.getElementById('selected-vehicle-subtitle').textContent =
                 `${v.make || ''} ${v.model || ''} ${v.year > 0 ? `(${v.year})` : ''} ${v.license_plate ? `• Plate: ${v.license_plate}` : ''}`.trim() || 'Track distance milestones, fuel economy trends, and historical fill-ups.';
 
@@ -957,7 +1261,7 @@
                 <div class="analytics-kpi-card">
                     <div class="analytics-kpi-label">Total Fuel Logged</div>
                     <div class="analytics-kpi-val">${totalLitres > 0 ? totalLitres.toFixed(1) : '0'} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">L</span></div>
-                    <div class="analytics-kpi-sub">${totalCost > 0 ? `$${totalCost.toFixed(2)} total spend` : 'Tracked from fill-ups'}</div>
+                    <div class="analytics-kpi-sub">${totalCost > 0 ? `₹${totalCost.toFixed(2)} total spend` : 'Tracked from fill-ups'}</div>
                 </div>
             `;
 
@@ -1140,7 +1444,7 @@
 
                     let extraInfo = '';
                     if (entry.fuel_litres) {
-                        extraInfo += `<br>⛽ Fuel: ${entry.fuel_litres} L ${entry.fuel_amount ? `($${entry.fuel_amount})` : ''}`;
+                        extraInfo += `<br>⛽ Fuel: ${entry.fuel_litres} L ${entry.fuel_amount ? `(₹${entry.fuel_amount})` : ''}`;
                     }
                     if (entry.efficiency) {
                         extraInfo += `<br>⚡ Efficiency: ${entry.efficiency.toFixed(1)} km/L`;
@@ -1202,7 +1506,7 @@
                 }
 
                 const dateStr = new Date(e.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-                const fuelStr = e.fuel_litres ? `${e.fuel_litres} L ${e.fuel_amount ? `<span style="color: var(--text-muted); font-size: 0.75rem;">($${e.fuel_amount})</span>` : ''}` : '<span style="color: var(--text-muted);">--</span>';
+                const fuelStr = e.fuel_litres ? `${e.fuel_litres} L ${e.fuel_amount ? `<span style="color: var(--text-muted); font-size: 0.75rem;">(₹${e.fuel_amount})</span>` : ''}` : '<span style="color: var(--text-muted);">--</span>';
                 const effBadge = e.efficiency && e.efficiency > 0 ? `<span class="metric-pill pill-efficiency">⚡ ${e.efficiency.toFixed(1)} km/L</span>` : '<span style="color: var(--text-muted);">--</span>';
 
                 return `
@@ -1313,6 +1617,28 @@
                 await loadData(activeVehicle.id);
             } catch (err) {
                 showToast(err.message || 'Failed to save log');
+            }
+        });
+
+        // Edit Vehicle Details Form Submit
+        document.getElementById('edit-vehicle-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeVehicle) return;
+            try {
+                await api(`/api/vehicles/${activeVehicle.id}`, {
+                    method: 'PUT',
+                    body: {
+                        name: document.getElementById('edit-v-name').value.trim(),
+                        make: document.getElementById('edit-v-make').value.trim(),
+                        year: parseInt(document.getElementById('edit-v-year').value, 10) || 2024,
+                        license_plate: document.getElementById('edit-v-plate').value.trim()
+                    }
+                });
+                closeModal('edit-vehicle-modal');
+                showToast('Vehicle details updated successfully!');
+                await loadData(activeVehicle.id);
+            } catch (err) {
+                showToast(err.message || 'Failed to update vehicle');
             }
         });
 

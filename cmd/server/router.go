@@ -72,6 +72,7 @@ func NewRouter(d RouterDeps) http.Handler {
 			r.Get("/", d.VehicleHandler.ListVehicles)
 			r.Post("/", d.VehicleHandler.CreateVehicle)
 			r.Get("/{id}", d.VehicleHandler.GetVehicle)
+			r.Put("/{id}", d.VehicleHandler.UpdateVehicle)
 			r.Delete("/{id}", d.VehicleHandler.DeleteVehicle)
 			r.Post("/{id}/mileage", d.VehicleHandler.AddMileage)
 			r.Put("/{id}/mileage/{mileageId}", d.VehicleHandler.UpdateMileage)

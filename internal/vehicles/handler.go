@@ -107,6 +107,46 @@ func (h *Handler) GetVehicle(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, v)
 }
 
+func (h *Handler) UpdateVehicle(w http.ResponseWriter, r *http.Request) {
+	sess, ok := session.Require(w, r)
+	if !ok {
+		return
+	}
+
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		response.Error(w, http.StatusBadRequest, "Vehicle ID required")
+		return
+	}
+
+	var req CreateVehicleRequest
+	if err := response.DecodeJSON(r, &req); err != nil || req.Name == "" {
+		response.Error(w, http.StatusBadRequest, "Vehicle name is required")
+		return
+	}
+
+	if req.Year <= 0 {
+		req.Year = time.Now().Year()
+	}
+
+	v := &Vehicle{
+		ID:           id,
+		UserID:       sess.UserID,
+		Name:         req.Name,
+		Make:         req.Make,
+		Model:        req.Model,
+		Year:         req.Year,
+		LicensePlate: req.LicensePlate,
+	}
+
+	if err := h.repo.UpdateVehicle(r.Context(), v); err != nil {
+		response.Error(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.JSON(w, http.StatusOK, v)
+}
+
 func (h *Handler) DeleteVehicle(w http.ResponseWriter, r *http.Request) {
 	sess, ok := session.Require(w, r)
 	if !ok {

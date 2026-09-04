@@ -528,6 +528,87 @@
             margin-top: 20px;
         }
 
+        /* Preset & State Pills */
+        .preset-section {
+            margin-bottom: 16px;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+        }
+
+        .preset-label {
+            display: block;
+            font-size: 0.725rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .preset-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .pill-btn {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            padding: 5px 11px;
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pill-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #EFF6FF;
+            transform: translateY(-1px);
+        }
+
+        .state-pills {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .state-pill-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-right: 2px;
+        }
+
+        .state-pill {
+            background: #F1F5F9;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.725rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.12s ease;
+        }
+
+        .state-pill:hover {
+            background: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+        }
+
         .btn-secondary {
             padding: 9px 16px;
             background: var(--bg-subtle);
@@ -682,8 +763,8 @@
                     <input type="number" id="modal-litres" min="0" step="0.1" placeholder="e.g. 35.5">
                 </div>
                 <div class="form-group">
-                    <label for="modal-cost">Cost ($ - Optional)</label>
-                    <input type="number" id="modal-cost" min="0" step="0.01" placeholder="e.g. 45.00">
+                    <label for="modal-cost">Cost (₹ - Optional)</label>
+                    <input type="number" id="modal-cost" min="0" step="0.01" placeholder="e.g. 500">
                 </div>
                 <div class="form-group">
                     <label for="modal-notes">Notes (Optional)</label>
@@ -733,6 +814,21 @@
                 <button class="btn-close" onclick="closeModal('add-modal')">&times;</button>
             </div>
             <form id="add-vehicle-form">
+                <!-- Popular Indian Vehicle Presets -->
+                <div class="preset-section">
+                    <label class="preset-label">⚡ Popular Indian Vehicles (Quick Select)</label>
+                    <div class="preset-pills">
+                        <button type="button" class="pill-btn" onclick="applyPreset('Honda City', 'Honda City', '2024', 'DL 01 AB 1234')">🚗 Honda City</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Creta', 'Hyundai Creta', '2024', 'MH 02 CD 5678')">🚗 Creta</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Swift', 'Maruti Suzuki Swift', '2023', 'KA 05 EF 9012')">🚗 Swift</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Nexon EV', 'Tata Nexon EV', '2024', 'HR 26 GH 3456')">⚡ Nexon EV</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Thar', 'Mahindra Thar 4x4', '2024', 'UP 16 JK 7890')">🚙 Thar</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Classic 350', 'Royal Enfield Classic 350', '2023', 'DL 04 LM 1122')">🏍️ Classic 350</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Activa 6G', 'Honda Activa 6G', '2024', 'MH 12 NP 3344')">🛵 Activa</button>
+                        <button type="button" class="pill-btn" onclick="applyPreset('Jupiter', 'TVS Jupiter 125', '2023', 'KA 01 RS 5566')">🛵 Jupiter</button>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="new-v-name">Vehicle Nickname</label>
                     <input type="text" id="new-v-name" required placeholder="e.g. Daily Honda City" autofocus>
@@ -748,6 +844,19 @@
                 <div class="form-group">
                     <label for="new-v-plate">License Plate</label>
                     <input type="text" id="new-v-plate" placeholder="e.g. DL 01 AB 1234">
+                    <div class="state-pills">
+                        <span class="state-pill-title">India State Codes:</span>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('DL')">DL</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('MH')">MH</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('KA')">KA</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('HR')">HR</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('UP')">UP</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('GJ')">GJ</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('TN')">TN</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('KL')">KL</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('TS')">TS</button>
+                        <button type="button" class="state-pill" onclick="setPlatePrefix('WB')">WB</button>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" onclick="closeModal('add-modal')">Cancel</button>
@@ -853,7 +962,7 @@
                     else insPill = `<span class="metric-pill pill-valid" onclick="openDocModal('${v.id}', 'INSURANCE')">✓ Ins. Valid</span>`;
                 }
 
-                const effPill = efficiency > 0 ? `<a href="/analytics?id=${v.id}" style="text-decoration: none;"><span class="metric-pill pill-efficiency">⚡ ${efficiency.toFixed(1)} km/L</span></a>` : `<span class="metric-pill pill-efficiency">⚡ First refill</span>`;
+                const effPill = efficiency > 0 ? `<a href="/analytics?id=${v.id}" style="text-decoration: none;"><span class="metric-pill pill-efficiency">⚡ ${efficiency.toFixed(1)} km/L</span></a>` : '';
 
                 return `
                     <div class="vehicle-card" id="card-${v.id}">
@@ -889,14 +998,13 @@
                         <!-- Card Footer -->
                         <div class="card-footer">
                             <button class="btn-text" onclick="toggleInlineFuel('${v.id}')">⛽ Quick Refill</button>
-                            <a href="/analytics?id=${v.id}" class="btn-text" style="text-decoration: none; font-weight: 700;">📊 Mileage & Trends →</a>
-                            <button class="btn-text btn-delete" onclick="deleteVehicle('${v.id}')">Delete</button>
+                            <a href="/analytics?id=${v.id}" class="btn-text" style="text-decoration: none; font-weight: 700;">✏️ Edit & Analytics →</a>
                         </div>
 
                         <div id="inline-fuel-${v.id}" class="inline-fuel-box">
                             <div class="fuel-inputs">
                                 <input type="number" id="fuel-litres-${v.id}" placeholder="Litres (e.g. 35)" min="0.1" step="0.1">
-                                <input type="number" id="fuel-cost-${v.id}" placeholder="Cost ($)" min="0" step="0.01">
+                                <input type="number" id="fuel-cost-${v.id}" placeholder="Cost (₹)" min="0" step="0.01">
                                 <input type="number" id="fuel-odo-${v.id}" value="${currentOdo}" placeholder="Odometer">
                             </div>
                             <button class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem; width: 100%; justify-content: center;" onclick="submitInlineFuel('${v.id}')">Log Refill</button>
@@ -1049,6 +1157,35 @@
                 showToast(err.message || 'Failed to update document');
             }
         });
+
+        // Quick Presets & Plate Helpers
+        function applyPreset(name, make, year, plate) {
+            document.getElementById('new-v-name').value = name;
+            document.getElementById('new-v-make').value = make;
+            document.getElementById('new-v-year').value = year;
+            const plateInput = document.getElementById('new-v-plate');
+            if (!plateInput.value) {
+                plateInput.value = plate;
+            }
+            document.getElementById('new-v-name').focus();
+        }
+
+        function setPlatePrefix(prefix) {
+            const input = document.getElementById('new-v-plate');
+            let val = input.value.trim();
+            if (!val) {
+                input.value = prefix + ' 01 ';
+            } else {
+                const parts = val.split(' ');
+                if (parts.length > 0 && parts[0].length === 2 && parts[0] === parts[0].toUpperCase()) {
+                    parts[0] = prefix;
+                    input.value = parts.join(' ');
+                } else {
+                    input.value = prefix + ' ' + val;
+                }
+            }
+            input.focus();
+        }
 
         // Add Vehicle Form
         document.getElementById('btn-add-vehicle-modal').addEventListener('click', () => {

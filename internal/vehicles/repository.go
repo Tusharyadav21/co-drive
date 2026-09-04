@@ -13,6 +13,7 @@ type Repository interface {
 	CreateVehicle(ctx context.Context, v *Vehicle) error
 	GetVehicleByID(ctx context.Context, id string, userID string) (*Vehicle, error)
 	ListVehiclesByUserID(ctx context.Context, userID string) ([]Vehicle, error)
+	UpdateVehicle(ctx context.Context, v *Vehicle) error
 	DeleteVehicle(ctx context.Context, id string, userID string) error
 
 	AddMileageEntry(ctx context.Context, entry *MileageEntry) error
@@ -101,6 +102,24 @@ func (r *PostgresRepository) ListVehiclesByUserID(ctx context.Context, userID st
 	}
 
 	return list, nil
+}
+
+func (r *PostgresRepository) UpdateVehicle(ctx context.Context, v *Vehicle) error {
+	v.UpdatedAt = time.Now()
+	query := `
+		UPDATE vehicles
+		SET name = $1, make = $2, model = $3, year = $4, license_plate = $5, updated_at = $6
+		WHERE id = $7 AND user_id = $8;
+	`
+	res, err := r.db.ExecContext(ctx, query, v.Name, v.Make, v.Model, v.Year, v.LicensePlate, v.UpdatedAt, v.ID, v.UserID)
+	if err != nil {
+		return fmt.Errorf("failed to update vehicle: %w", err)
+	}
+	n, _ := res.RowsAffected()
+	if n == 0 {
+		return fmt.Errorf("vehicle not found or access denied")
+	}
+	return nil
 }
 
 func (r *PostgresRepository) DeleteVehicle(ctx context.Context, id string, userID string) error {
