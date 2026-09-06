@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-Drive | Fuel & Mileage Logs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-subtle: #F1F5F9;
+            --border-color: #E2E8F0;
+            --border-hover: #CBD5E1;
+            --border-focus: #2563EB;
+            --primary: #0F172A;
+            --primary-hover: #1E293B;
+            --accent: #2563EB;
+            --accent-hover: #1D4ED8;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            --success: #059669;
+            --success-bg: #ECFDF5;
+            --success-border: #A7F3D0;
+            --warning: #D97706;
+            --warning-bg: #FFFBEB;
+            --warning-border: #FDE68A;
+            --error: #E11D48;
+            --error-bg: #FFF1F2;
+            --error-border: #FECDD3;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+            --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.15s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+        }
+
+        .nav-btn.active {
+            color: var(--text-main);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .sync-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px 4px 6px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        main {
+            max-width: 1140px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 28px 20px 48px;
+            flex: 1;
+        }
+
+        .page-header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .page-header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.03em;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .vehicle-filter-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        select.vehicle-filter {
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: #FFFFFF;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+        }
+
+        select.vehicle-filter:focus {
+            border-color: var(--border-focus);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            background: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .summary-card-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .summary-card-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .summary-card-value span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Statement Card & Table */
+        .statement-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        thead th {
+            background: var(--bg-subtle);
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: #FAFAFA;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .badge-efficiency {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 99px;
+            color: var(--success);
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-na {
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            transition: all 0.15s ease;
+        }
+
+        .btn-delete:hover {
+            color: var(--error);
+            background: var(--error-bg);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-box {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: var(--shadow-modal);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--border-focus);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-ghost {
+            padding: 8px 14px;
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-subtle);
+            color: var(--text-main);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-modal);
+            display: none;
+            z-index: 200;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 24px 20px;
+            background: #FFFFFF;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (min-width: 640px) {
+            .footer-inner {
+                flex-direction: row;
+            }
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-inner">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/dashboard" class="logo">
+                    <div class="logo-mark">C</div>
+                    Co-Drive
+                </a>
+                <nav class="nav-links">
+                    <a href="/dashboard" class="nav-btn">Dashboard</a>
+                    <a href="/logs" class="nav-btn active">Logs</a>
+                    <a href="/account" class="nav-btn">Account</a>
+                </nav>
+            </div>
+            <div class="header-actions">
+                <div class="sync-badge">
+                    <span class="sync-dot"></span> Cloud Sync
+                </div>
+                <a href="/account" class="user-pill">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span id="user-email-text">Driver</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Fuel & Odometer Statement</h1>
+                <p class="page-subtitle">Chronological ledger of vehicle distance, fuel entries, and efficiency</p>
+            </div>
+            <div class="vehicle-filter-wrap">
+                <select id="vehicle-select" class="vehicle-filter" aria-label="Select Vehicle">
+                    <option value="">Loading vehicles...</option>
+                </select>
+                <button class="btn-primary" onclick="openLogModal()">
+                    + Add Log Entry
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Metric Tiles -->
+        <div class="summary-bar">
+            <div class="summary-card">
+                <div class="summary-card-title">Latest Odometer</div>
+                <div class="summary-card-value" id="stat-odometer">0 <span>km</span></div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-title">Avg Fuel Economy</div>
+                <div class="summary-card-value" id="stat-economy">-- <span>km/L</span></div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-title">Total Fuel Added</div>
+                <div class="summary-card-value" id="stat-fuel">0 <span>L</span></div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-title">Total Fuel Spend</div>
+                <div class="summary-card-value" id="stat-spend">₹0</div>
+            </div>
+        </div>
+
+        <!-- Chronological Statement -->
+        <div class="statement-card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Odometer</th>
+                            <th>Distance</th>
+                            <th>Fuel Added</th>
+                            <th>Cost</th>
+                            <th>Economy</th>
+                            <th>Notes</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody">
+                        <tr>
+                            <td colspan="8" class="empty-state">Loading vehicle entries...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add Log Entry -->
+    <div id="log-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Add Fuel or Odometer Entry</h3>
+                <button class="btn-close" onclick="closeLogModal()">&times;</button>
+            </div>
+            <form id="log-form" onsubmit="handleSaveLog(event)">
+                <div class="form-group">
+                    <label for="log-vehicle">Target Vehicle</label>
+                    <select id="log-vehicle" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="log-odometer">Current Odometer (km)</label>
+                    <input type="number" id="log-odometer" placeholder="e.g. 15420" required min="0" step="1">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label for="log-litres">Fuel Added (Litres)</label>
+                        <input type="number" id="log-litres" placeholder="Optional, e.g. 35.5" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="log-amount">Fuel Cost (₹)</label>
+                        <input type="number" id="log-amount" placeholder="Optional, e.g. 3500" min="0" step="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="log-date">Entry Date</label>
+                    <input type="date" id="log-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="log-notes">Notes / Fuel Station</label>
+                    <input type="text" id="log-notes" placeholder="e.g. Full tank at Shell Highway">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-ghost" onclick="closeLogModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="logo-mark" style="width: 22px; height: 22px; font-size: 0.75rem;">C</div>
+                Co-Drive &bull; Shared Vehicle Fleet & Maintenance
+            </div>
+            <div class="footer-status">
+                <span class="status-dot"></span> All Systems Operational
+            </div>
+            <div>&copy; 2026 Co-Drive. Simple Car Management.</div>
+        </div>
+    </footer>
+
+    <script src="/static/api.js"></script>
+    <script>
+        let vehicles = [];
+        let activeVehicle = null;
+
+        const vehicleSelect = document.getElementById('vehicle-select');
+        const logModal = document.getElementById('log-modal');
+        const toast = document.getElementById('toast');
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        function openLogModal() {
+            if (!activeVehicle) {
+                showToast('Please select or create a vehicle first');
+                return;
+            }
+            document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+            const lastOdo = activeVehicle.mileage_entries && activeVehicle.mileage_entries.length > 0
+                ? Math.max(...activeVehicle.mileage_entries.map(e => e.mileage))
+                : 0;
+            document.getElementById('log-odometer').value = lastOdo || '';
+            document.getElementById('log-litres').value = '';
+            document.getElementById('log-amount').value = '';
+            document.getElementById('log-notes').value = '';
+
+            // Populate vehicle selector in modal
+            const modalSelect = document.getElementById('log-vehicle');
+            modalSelect.innerHTML = '';
+            vehicles.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.id;
+                opt.textContent = `${v.name || v.make} (${v.license_plate || v.year})`;
+                if (v.id === activeVehicle.id) opt.selected = true;
+                modalSelect.appendChild(opt);
+            });
+
+            logModal.classList.remove('hidden');
+        }
+
+        function closeLogModal() {
+            logModal.classList.add('hidden');
+        }
+
+        async function init() {
+            try {
+                const user = await api('/api/users/me');
+                const avatar = (user.name || user.email || 'U')[0].toUpperCase();
+                document.getElementById('user-avatar').textContent = avatar;
+                document.getElementById('user-email-text').textContent = user.name || user.email;
+            } catch (e) {
+                window.location.href = '/auth';
+                return;
+            }
+
+            try {
+                vehicles = await api('/api/vehicles');
+                renderVehicleSelect();
+            } catch (e) {
+                console.error('Failed to load vehicles:', e);
+            }
+        }
+
+        function renderVehicleSelect() {
+            vehicleSelect.innerHTML = '';
+            if (!vehicles || vehicles.length === 0) {
+                vehicleSelect.innerHTML = '<option value="">No vehicles available</option>';
+                renderEmptyLogs();
+                return;
+            }
+
+            vehicles.forEach((v, idx) => {
+                const opt = document.createElement('option');
+                opt.value = v.id;
+                opt.textContent = `${v.name || v.make} (${v.license_plate || v.year})`;
+                if (idx === 0) opt.selected = true;
+                vehicleSelect.appendChild(opt);
+            });
+
+            activeVehicle = vehicles[0];
+            renderVehicleLogs(activeVehicle);
+        }
+
+        vehicleSelect.addEventListener('change', (e) => {
+            const vid = e.target.value;
+            activeVehicle = vehicles.find(v => v.id === vid) || vehicles[0];
+            if (activeVehicle) {
+                renderVehicleLogs(activeVehicle);
+            }
+        });
+
+        function renderEmptyLogs() {
+            document.getElementById('stat-odometer').innerHTML = `0 <span>km</span>`;
+            document.getElementById('stat-economy').innerHTML = `-- <span>km/L</span>`;
+            document.getElementById('stat-fuel').innerHTML = `0 <span>L</span>`;
+            document.getElementById('stat-spend').textContent = `₹0`;
+            document.getElementById('logs-tbody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <h3>No Vehicle Records Found</h3>
+                        <p>Create a vehicle on the <a href="/dashboard" style="color: var(--accent); font-weight: 600;">Dashboard</a> to start recording fuel and odometer logs.</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function renderVehicleLogs(v) {
+            const entries = v.mileage_entries ? [...v.mileage_entries] : [];
+            // Sort ascending by date/mileage for distance calculations, then reverse for display
+            entries.sort((a, b) => new Date(a.date) - new Date(b.date) || a.mileage - b.mileage);
+
+            let totalFuel = 0;
+            let totalSpend = 0;
+            let efficiencySum = 0;
+            let efficiencyCount = 0;
+            let maxOdometer = 0;
+
+            entries.forEach(e => {
+                if (e.mileage > maxOdometer) maxOdometer = e.mileage;
+                if (e.fuel_litres) totalFuel += e.fuel_litres;
+                if (e.fuel_amount) totalSpend += e.fuel_amount;
+                if (e.efficiency && e.efficiency > 0) {
+                    efficiencySum += e.efficiency;
+                    efficiencyCount++;
+                }
+            });
+
+            const avgEfficiency = efficiencyCount > 0 ? (efficiencySum / efficiencyCount).toFixed(1) : '--';
+
+            document.getElementById('stat-odometer').innerHTML = `${maxOdometer.toLocaleString()} <span>km</span>`;
+            document.getElementById('stat-economy').innerHTML = `${avgEfficiency} <span>km/L</span>`;
+            document.getElementById('stat-fuel').innerHTML = `${totalFuel.toFixed(1)} <span>L</span>`;
+            document.getElementById('stat-spend').textContent = `₹${Math.round(totalSpend).toLocaleString()}`;
+
+            const tbody = document.getElementById('logs-tbody');
+            tbody.innerHTML = '';
+
+            if (entries.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <h3>No Logs for this Vehicle</h3>
+                            <p>Click "+ Add Log Entry" above to record your first fuel-up or odometer milestone.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Reverse for newest first in table
+            const displayList = [...entries].reverse();
+
+            displayList.forEach((entry, idx) => {
+                const tr = document.createElement('tr');
+                const dateStr = entry.date ? new Date(entry.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown';
+
+                // Distance calculation
+                let distStr = '—';
+                const originalIndex = entries.findIndex(x => x.id === entry.id);
+                if (originalIndex > 0) {
+                    const diff = entry.mileage - entries[originalIndex - 1].mileage;
+                    distStr = diff > 0 ? `+${diff.toLocaleString()} km` : `${diff.toLocaleString()} km`;
+                }
+
+                const fuelStr = entry.fuel_litres ? `${entry.fuel_litres.toFixed(1)} L` : '—';
+                const costStr = entry.fuel_amount ? `₹${Math.round(entry.fuel_amount).toLocaleString()}` : '—';
+                const ecoBadge = entry.efficiency && entry.efficiency > 0
+                    ? `<span class="badge-efficiency">${entry.efficiency.toFixed(1)} km/L</span>`
+                    : `<span class="badge-na">—</span>`;
+
+                tr.innerHTML = `
+                    <td class="font-mono">${dateStr}</td>
+                    <td class="font-mono"><strong>${entry.mileage.toLocaleString()} km</strong></td>
+                    <td class="font-mono" style="color: var(--text-muted);">${distStr}</td>
+                    <td>${fuelStr}</td>
+                    <td>${costStr}</td>
+                    <td>${ecoBadge}</td>
+                    <td style="color: var(--text-muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${entry.notes || '—'}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-delete" onclick="handleDeleteLog('${entry.id}')" title="Delete entry">🗑️ Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function handleSaveLog(e) {
+            e.preventDefault();
+            const targetVehicleId = document.getElementById('log-vehicle').value;
+            const odo = parseInt(document.getElementById('log-odometer').value, 10);
+            const litresRaw = document.getElementById('log-litres').value;
+            const amountRaw = document.getElementById('log-amount').value;
+            const date = document.getElementById('log-date').value;
+            const notes = document.getElementById('log-notes').value.trim();
+
+            const payload = {
+                mileage: odo,
+                date: new Date(date).toISOString(),
+                notes: notes
+            };
+
+            if (litresRaw) payload.fuel_litres = parseFloat(litresRaw);
+            if (amountRaw) payload.fuel_amount = parseFloat(amountRaw);
+
+            try {
+                await api(`/api/vehicles/${targetVehicleId}/mileage`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('Log entry recorded successfully');
+                closeLogModal();
+
+                // Refresh vehicle data
+                vehicles = await api('/api/vehicles');
+                activeVehicle = vehicles.find(v => v.id === targetVehicleId) || vehicles[0];
+                renderVehicleLogs(activeVehicle);
+            } catch (err) {
+                showToast('Failed to save log entry: ' + err.message);
+            }
+        }
+
+        async function handleDeleteLog(entryId) {
+            if (!confirm('Are you sure you want to delete this log entry?')) return;
+            try {
+                await api(`/api/vehicles/${activeVehicle.id}/mileage/${entryId}`, {
+                    method: 'DELETE'
+                });
+                showToast('Log entry removed');
+                vehicles = await api('/api/vehicles');
+                activeVehicle = vehicles.find(v => v.id === activeVehicle.id) || vehicles[0];
+                renderVehicleLogs(activeVehicle);
+            } catch (err) {
+                showToast('Failed to delete log entry: ' + err.message);
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

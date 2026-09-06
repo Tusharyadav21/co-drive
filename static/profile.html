@@ -135,19 +135,19 @@
             align-items: center;
             gap: 6px;
             padding: 4px 10px;
-            background: var(--bg-subtle);
-            border: 1px solid var(--border-color);
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
             border-radius: 99px;
             font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: var(--success);
         }
 
         .sync-dot {
             width: 6px;
             height: 6px;
-            background: var(--success);
             border-radius: 50%;
+            background: var(--success);
         }
 
         .user-pill {
@@ -158,7 +158,7 @@
             background: var(--bg-subtle);
             border: 1px solid var(--border-color);
             border-radius: 99px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-main);
             text-decoration: none;
@@ -167,9 +167,9 @@
         .user-avatar {
             width: 24px;
             height: 24px;
-            background: var(--accent);
-            color: #FFFFFF;
             border-radius: 50%;
+            background: var(--primary);
+            color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -177,22 +177,26 @@
             font-weight: 700;
         }
 
-        .btn-logout {
-            padding: 6px 12px;
-            background: transparent;
-            border: 1px solid var(--border-color);
+        .btn-logout-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--error-bg);
+            color: var(--error);
+            border: 1px solid var(--error-border);
             border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
-        .btn-logout:hover {
-            color: var(--error);
-            border-color: var(--error-border);
-            background: var(--error-bg);
+        .btn-logout-action:hover {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+            color: #B91C1C;
         }
 
         main {
@@ -428,6 +432,75 @@
                 opacity: 1;
             }
         }
+
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .sync-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 24px 20px;
+            background: #FFFFFF;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (min-width: 640px) {
+            .footer-inner {
+                flex-direction: row;
+            }
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+        }
     </style>
 </head>
 
@@ -440,25 +513,27 @@
                     Co-Drive
                 </a>
                 <nav class="nav-links">
-                    <a href="/dashboard" class="nav-btn">Garage</a>
-                    <a href="/analytics" class="nav-btn">Mileage & Analytics</a>
-                    <a href="/profile" class="nav-btn active">Driver Profile</a>
+                    <a href="/dashboard" class="nav-btn">Dashboard</a>
+                    <a href="/logs" class="nav-btn">Logs</a>
+                    <a href="/account" class="nav-btn active">Account</a>
                 </nav>
             </div>
             <div class="header-actions">
-                <a href="/profile" class="user-pill">
-                    <div class="user-avatar" id="nav-user-avatar">D</div>
-                    <span id="nav-user-name">Driver</span>
+                <div class="sync-badge">
+                    <span class="sync-dot"></span> Cloud Sync
+                </div>
+                <a href="/account" class="user-pill">
+                    <div class="user-avatar" id="user-avatar">D</div>
+                    <span id="user-email-text">Driver</span>
                 </a>
-                <button id="btn-logout" class="btn-logout">Sign Out</button>
             </div>
         </div>
     </header>
 
     <main>
         <div class="page-header">
-            <h1 class="page-title">Driver Profile</h1>
-            <p class="page-desc">Manage your driver details, emergency contact, and account preferences.</p>
+            <h1 class="page-title">Account Settings</h1>
+            <p class="page-desc">Manage your driver identity, contact info, and emergency details.</p>
         </div>
 
         <div class="profile-container">
@@ -477,61 +552,81 @@
                 <div class="member-since" id="member-since">
                     Member since: -
                 </div>
+
+                <div style="margin-top: 24px; width: 100%; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <button id="btn-logout" class="btn-logout-action" type="button" style="width: 100%;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Sign Out
+                    </button>
+                </div>
             </div>
 
-            <!-- Profile Edit Form -->
-            <div class="profile-card">
-                <form id="profile-form">
-                    <div class="form-section-title">
-                        <span>👤 Personal Identity</span>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="input-full-name">Display / Full Name</label>
-                            <input type="text" id="input-full-name" placeholder="e.g. John Doe" required>
+            <!-- Profile Edit Form & Security -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <div class="profile-card">
+                    <form id="profile-form">
+                        <div class="form-section-title">
+                            <span>👤 Personal Identity</span>
                         </div>
-                        <div class="form-group">
-                            <label for="input-email">Email Address (Read-only)</label>
-                            <input type="email" id="input-email" disabled>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="input-full-name">Display / Full Name</label>
+                                <input type="text" id="input-full-name" placeholder="e.g. John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-email">Email Address (Read-only)</label>
+                                <input type="email" id="input-email" disabled>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-section-title">
-                        <span>📞 Contact & Emergency Information</span>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="input-phone">Phone Number</label>
-                            <input type="tel" id="input-phone" placeholder="e.g. +1 (555) 123-4567">
+                        <div class="form-section-title">
+                            <span>📞 Contact & Emergency Information</span>
                         </div>
-                        <div class="form-group">
-                            <label for="input-emergency-contact">Emergency Contact</label>
-                            <input type="text" id="input-emergency-contact"
-                                placeholder="e.g. Jane Doe (+1 555-987-6543)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="input-phone">Phone Number</label>
+                                <input type="tel" id="input-phone" placeholder="e.g. +91 98765 43210">
+                            </div>
+                            <div class="form-group">
+                                <label for="input-emergency-contact">Emergency Contact</label>
+                                <input type="text" id="input-emergency-contact"
+                                    placeholder="e.g. Jane Doe (+91 98765 12345)">
+                            </div>
                         </div>
-                        <div class="form-group full-width">
-                            <label for="input-address">Mailing / Garage Address</label>
-                            <input type="text" id="input-address" placeholder="e.g. 123 Speedway Blvd, Austin, TX">
-                        </div>
-                    </div>
 
-                    <div class="form-section-title">
-                        <span>📝 Driver Notes & Bio</span>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label for="input-bio">Bio / Vehicle Ownership Notes</label>
-                            <textarea id="input-bio"
-                                placeholder="Add any details about your vehicles, driving habits, or notes..."></textarea>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                            <button type="submit" id="btn-save" class="btn-primary">
+                                Save Account Changes
+                            </button>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-                        <button type="submit" id="btn-save" class="btn-primary">
-                            Save Changes
+                <div class="profile-card">
+                    <div class="form-section-title">
+                        <span>🔒 Session & Security</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 12px;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.95rem;">Active Login Session</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
+                                You are signed in on this device. Logging out clears your rolling session.
+                            </div>
+                        </div>
+                        <button id="btn-logout-alt" class="btn-logout-action" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Sign Out
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </main>
@@ -572,8 +667,10 @@
             const initial = name.charAt(0).toUpperCase() || 'D';
 
             // Nav Bar
-            document.getElementById('nav-user-name').textContent = name;
-            document.getElementById('nav-user-avatar').textContent = initial;
+            if (document.getElementById('user-email-text')) document.getElementById('user-email-text').textContent = name;
+            if (document.getElementById('user-avatar')) document.getElementById('user-avatar').textContent = initial;
+            if (document.getElementById('nav-user-name')) document.getElementById('nav-user-name').textContent = name;
+            if (document.getElementById('nav-user-avatar')) document.getElementById('nav-user-avatar').textContent = initial;
 
             // Summary Card
             document.getElementById('summary-full-name').textContent = name;
@@ -590,8 +687,6 @@
             document.getElementById('input-email').value = p.email || '';
             document.getElementById('input-phone').value = p.phone || '';
             document.getElementById('input-emergency-contact').value = p.emergency_contact || '';
-            document.getElementById('input-address').value = p.address || '';
-            document.getElementById('input-bio').value = p.bio || '';
         }
 
         document.getElementById('profile-form').addEventListener('submit', async (e) => {
@@ -603,9 +698,7 @@
             const payload = {
                 full_name: document.getElementById('input-full-name').value.trim(),
                 phone: document.getElementById('input-phone').value.trim(),
-                emergency_contact: document.getElementById('input-emergency-contact').value.trim(),
-                address: document.getElementById('input-address').value.trim(),
-                bio: document.getElementById('input-bio').value.trim()
+                emergency_contact: document.getElementById('input-emergency-contact').value.trim()
             };
 
             try {
@@ -634,7 +727,7 @@
             }
         });
 
-        document.getElementById('btn-logout').addEventListener('click', async () => {
+        async function handleLogout() {
             try {
                 await fetch('/api/auth/logout', {
                     method: 'POST',
@@ -643,11 +736,33 @@
             } finally {
                 window.location.href = '/auth';
             }
-        });
+        }
+
+        const btnLogout = document.getElementById('btn-logout');
+        if (btnLogout) btnLogout.addEventListener('click', handleLogout);
+
+        const btnLogoutAlt = document.getElementById('btn-logout-alt');
+        if (btnLogoutAlt) btnLogoutAlt.addEventListener('click', handleLogout);
 
         // Initialize
         fetchProfile();
     </script>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span>Co-Drive</span>
+                <span>&bull;</span>
+                <span>Vehicle & Fleet Management</span>
+            </div>
+            <div class="footer-status">
+                <span class="status-dot"></span>
+                <span>All Systems Operational</span>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Co-Drive. Safe, minimalist vehicle fleet management.
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

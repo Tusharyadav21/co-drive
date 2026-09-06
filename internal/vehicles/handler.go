@@ -20,11 +20,16 @@ func NewHandler(repo Repository) *Handler {
 }
 
 type CreateVehicleRequest struct {
-	Name         string `json:"name"`
-	Make         string `json:"make"`
-	Model        string `json:"model"`
-	Year         int    `json:"year"`
-	LicensePlate string `json:"license_plate"`
+	Name             string `json:"name"`
+	Make             string `json:"make"`
+	Model            string `json:"model"`
+	Year             int    `json:"year"`
+	LicensePlate     string `json:"license_plate"`
+	ChassisNumber    string `json:"chassis_number"`
+	EngineNumber     string `json:"engine_number"`
+	RegistrationDate string `json:"registration_date"`
+	NextServiceKM    int    `json:"next_service_km"`
+	NextServiceDate  string `json:"next_service_date"`
 }
 
 func (h *Handler) ListVehicles(w http.ResponseWriter, r *http.Request) {
@@ -64,12 +69,17 @@ func (h *Handler) CreateVehicle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := &Vehicle{
-		UserID:       sess.UserID,
-		Name:         req.Name,
-		Make:         req.Make,
-		Model:        req.Model,
-		Year:         req.Year,
-		LicensePlate: req.LicensePlate,
+		UserID:           sess.UserID,
+		Name:             req.Name,
+		Make:             req.Make,
+		Model:            req.Model,
+		Year:             req.Year,
+		LicensePlate:     req.LicensePlate,
+		ChassisNumber:    req.ChassisNumber,
+		EngineNumber:     req.EngineNumber,
+		RegistrationDate: req.RegistrationDate,
+		NextServiceKM:    req.NextServiceKM,
+		NextServiceDate:  req.NextServiceDate,
 	}
 
 	if err := h.repo.CreateVehicle(r.Context(), v); err != nil {
@@ -130,13 +140,18 @@ func (h *Handler) UpdateVehicle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := &Vehicle{
-		ID:           id,
-		UserID:       sess.UserID,
-		Name:         req.Name,
-		Make:         req.Make,
-		Model:        req.Model,
-		Year:         req.Year,
-		LicensePlate: req.LicensePlate,
+		ID:               id,
+		UserID:           sess.UserID,
+		Name:             req.Name,
+		Make:             req.Make,
+		Model:            req.Model,
+		Year:             req.Year,
+		LicensePlate:     req.LicensePlate,
+		ChassisNumber:    req.ChassisNumber,
+		EngineNumber:     req.EngineNumber,
+		RegistrationDate: req.RegistrationDate,
+		NextServiceKM:    req.NextServiceKM,
+		NextServiceDate:  req.NextServiceDate,
 	}
 
 	if err := h.repo.UpdateVehicle(r.Context(), v); err != nil {

@@ -33,3 +33,5 @@ co-drive-*.json
 *.key.json
 
 .codegraph/
+.playwright-mcp/
+scratch/

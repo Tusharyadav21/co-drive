@@ -17,7 +17,7 @@ func NewSMTPService(cfg config.SMTPConfig) *SMTPService {
 }
 
 func (s *SMTPService) SendEmail(to string, subject string, htmlBody string) error {
-	if s.cfg.Host == "" {
+	if s.cfg.Host == "" || s.cfg.Username == "" || s.cfg.Password == "" {
 		log.Printf("[DEV EMAIL LOG] To: %s | Subject: %s | Body: %s", to, subject, htmlBody)
 		return nil
 	}
@@ -46,6 +46,7 @@ func (s *SMTPService) SendEmail(to string, subject string, htmlBody string) erro
 }
 
 func (s *SMTPService) SendOTP(to string, otp string, ttlMinutes int) error {
+	log.Printf("[DEV OTP] Code: %s for %s", otp, to)
 	htmlBody, err := RenderOTPEmail(otp, ttlMinutes)
 	if err != nil {
 		return err

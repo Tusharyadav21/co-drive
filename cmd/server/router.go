@@ -34,8 +34,11 @@ var staticPages = map[string]string{
 	"/auth":      "auth.html",
 	"/dashboard": "dashboard.html",
 	"/app":       "dashboard.html",
-	"/analytics": "analytics.html",
+	"/analytics": "logs.html",
 	"/profile":   "profile.html",
+	"/account":   "profile.html",
+	"/sharing":   "dashboard.html",
+	"/logs":      "logs.html",
 }
 
 func NewRouter(d RouterDeps) http.Handler {

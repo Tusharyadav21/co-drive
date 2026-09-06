@@ -9,9 +9,14 @@ type Vehicle struct {
 	Make         string    `json:"make"`
 	Model        string    `json:"model"`
 	Year         int       `json:"year"`
-	LicensePlate string    `json:"license_plate"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	LicensePlate     string    `json:"license_plate"`
+	ChassisNumber    string    `json:"chassis_number,omitempty"`
+	EngineNumber     string    `json:"engine_number,omitempty"`
+	RegistrationDate string    `json:"registration_date,omitempty"`
+	NextServiceKM    int       `json:"next_service_km,omitempty"`
+	NextServiceDate  string    `json:"next_service_date,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 
 	// Enriched fields for API responses
 	PUC       *VehicleDocument `json:"puc,omitempty"`

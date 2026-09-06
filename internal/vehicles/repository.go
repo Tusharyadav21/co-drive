@@ -43,10 +43,10 @@ func (r *PostgresRepository) CreateVehicle(ctx context.Context, v *Vehicle) erro
 	v.UpdatedAt = time.Now()
 
 	query := `
-		INSERT INTO vehicles (id, user_id, name, make, model, year, license_plate, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+		INSERT INTO vehicles (id, user_id, name, make, model, year, license_plate, chassis_number, engine_number, registration_date, next_service_km, next_service_date, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);
 	`
-	_, err := r.db.ExecContext(ctx, query, v.ID, v.UserID, v.Name, v.Make, v.Model, v.Year, v.LicensePlate, v.CreatedAt, v.UpdatedAt)
+	_, err := r.db.ExecContext(ctx, query, v.ID, v.UserID, v.Name, v.Make, v.Model, v.Year, v.LicensePlate, v.ChassisNumber, v.EngineNumber, v.RegistrationDate, v.NextServiceKM, v.NextServiceDate, v.CreatedAt, v.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("failed to create vehicle: %w", err)
 	}
@@ -54,11 +54,11 @@ func (r *PostgresRepository) CreateVehicle(ctx context.Context, v *Vehicle) erro
 }
 
 func (r *PostgresRepository) GetVehicleByID(ctx context.Context, id string, userID string) (*Vehicle, error) {
-	query := `SELECT id, user_id, name, make, model, year, license_plate, created_at, updated_at FROM vehicles WHERE id = $1 AND user_id = $2;`
+	query := `SELECT id, user_id, name, make, model, year, license_plate, chassis_number, engine_number, registration_date, next_service_km, next_service_date, created_at, updated_at FROM vehicles WHERE id = $1 AND user_id = $2;`
 	row := r.db.QueryRowContext(ctx, query, id, userID)
 
 	var v Vehicle
-	if err := row.Scan(&v.ID, &v.UserID, &v.Name, &v.Make, &v.Model, &v.Year, &v.LicensePlate, &v.CreatedAt, &v.UpdatedAt); err != nil {
+	if err := row.Scan(&v.ID, &v.UserID, &v.Name, &v.Make, &v.Model, &v.Year, &v.LicensePlate, &v.ChassisNumber, &v.EngineNumber, &v.RegistrationDate, &v.NextServiceKM, &v.NextServiceDate, &v.CreatedAt, &v.UpdatedAt); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
@@ -74,7 +74,7 @@ func (r *PostgresRepository) GetVehicleByID(ctx context.Context, id string, user
 }
 
 func (r *PostgresRepository) ListVehiclesByUserID(ctx context.Context, userID string) ([]Vehicle, error) {
-	query := `SELECT id, user_id, name, make, model, year, license_plate, created_at, updated_at FROM vehicles WHERE user_id = $1 ORDER BY created_at DESC;`
+	query := `SELECT id, user_id, name, make, model, year, license_plate, chassis_number, engine_number, registration_date, next_service_km, next_service_date, created_at, updated_at FROM vehicles WHERE user_id = $1 ORDER BY created_at DESC;`
 	rows, err := r.db.QueryContext(ctx, query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query vehicles: %w", err)
@@ -83,7 +83,7 @@ func (r *PostgresRepository) ListVehiclesByUserID(ctx context.Context, userID st
 	list := []Vehicle{}
 	for rows.Next() {
 		var v Vehicle
-		if err := rows.Scan(&v.ID, &v.UserID, &v.Name, &v.Make, &v.Model, &v.Year, &v.LicensePlate, &v.CreatedAt, &v.UpdatedAt); err != nil {
+		if err := rows.Scan(&v.ID, &v.UserID, &v.Name, &v.Make, &v.Model, &v.Year, &v.LicensePlate, &v.ChassisNumber, &v.EngineNumber, &v.RegistrationDate, &v.NextServiceKM, &v.NextServiceDate, &v.CreatedAt, &v.UpdatedAt); err != nil {
 			rows.Close()
 			return nil, err
 		}
@@ -108,10 +108,10 @@ func (r *PostgresRepository) UpdateVehicle(ctx context.Context, v *Vehicle) erro
 	v.UpdatedAt = time.Now()
 	query := `
 		UPDATE vehicles
-		SET name = $1, make = $2, model = $3, year = $4, license_plate = $5, updated_at = $6
-		WHERE id = $7 AND user_id = $8;
+		SET name = $1, make = $2, model = $3, year = $4, license_plate = $5, chassis_number = $6, engine_number = $7, registration_date = $8, next_service_km = $9, next_service_date = $10, updated_at = $11
+		WHERE id = $12 AND user_id = $13;
 	`
-	res, err := r.db.ExecContext(ctx, query, v.Name, v.Make, v.Model, v.Year, v.LicensePlate, v.UpdatedAt, v.ID, v.UserID)
+	res, err := r.db.ExecContext(ctx, query, v.Name, v.Make, v.Model, v.Year, v.LicensePlate, v.ChassisNumber, v.EngineNumber, v.RegistrationDate, v.NextServiceKM, v.NextServiceDate, v.UpdatedAt, v.ID, v.UserID)
 	if err != nil {
 		return fmt.Errorf("failed to update vehicle: %w", err)
 	}
