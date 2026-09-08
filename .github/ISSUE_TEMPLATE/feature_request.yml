@@ -1,0 +1,51 @@
+name: Feature Request
+description: Propose a new feature, enhancement, or architectural improvement
+title: "[Feature]: "
+labels: ["type/feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature or enhancement for Co-Drive!
+  - type: input
+    id: feature-title
+    attributes:
+      label: Feature Name
+      description: Concise title describing the feature or enhancement.
+      placeholder: e.g., Add CSV export for vehicle mileage logs
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Motivation
+      description: What problem does this solve, or what user need does it address?
+      placeholder: As a fleet driver/owner, I want to export my monthly mileage logs to CSV so that I can report expenses to my accountant.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Design
+      description: Describe the solution you'd like to see implemented.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or workarounds you have considered.
+    validations:
+      false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Primary Subsystem
+      options:
+        - "Backend (Go Service & API)"
+        - "Frontend (UI / Vanilla JS / CSS)"
+        - "Database Schema & Persistence"
+        - "Authentication & Security"
+        - "Documentation / DevOps"
+    validations:
+      required: true

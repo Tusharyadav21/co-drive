@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Architecture & Invariants Documentation
+    url: https://github.com/Tusharyadav21/co-drive/blob/main/docs/Architecture.md
+    about: Read about Co-Drive's architectural standards and invariants.
+  - name: ADR Decision Register
+    url: https://github.com/Tusharyadav21/co-drive/blob/main/docs/Decisions.md
+    about: Review Architecture Decision Records for the project.
