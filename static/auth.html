@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Co-Drive | Sign In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
     <style>
         :root {
             --bg-page: #F8FAFC;
@@ -141,7 +149,8 @@
             letter-spacing: 0.04em;
         }
 
-        input[type="email"], input[type="text"] {
+        input[type="email"],
+        input[type="text"] {
             width: 100%;
             padding: 12px 14px;
             background: #FFFFFF;
@@ -154,7 +163,8 @@
             transition: all 0.15s ease;
         }
 
-        input[type="email"]:focus, input[type="text"]:focus {
+        input[type="email"]:focus,
+        input[type="text"]:focus {
             border-color: var(--border-focus);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
@@ -297,6 +307,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <a href="/" class="back-link">&larr; Back to Home</a>
@@ -315,13 +326,15 @@
             <div id="step-email">
                 <div class="card-header">
                     <h1>Sign In with Email</h1>
-                    <p>Enter your email address to receive a secure 6-digit login code. New users are registered automatically.</p>
+                    <p>Enter your email address to receive a secure 6-digit login code. New users are registered
+                        automatically.</p>
                 </div>
 
                 <form id="email-form">
                     <div class="form-group">
                         <label for="email-input">Email Address</label>
-                        <input type="email" id="email-input" placeholder="name@company.com" required autofocus autocomplete="email">
+                        <input type="email" id="email-input" placeholder="name@company.com" required autofocus
+                            autocomplete="email">
                     </div>
 
                     <button type="submit" id="btn-send-otp" class="btn">
@@ -334,17 +347,24 @@
             <div id="step-otp" class="hidden">
                 <div class="card-header">
                     <h1>Enter Verification Code</h1>
-                    <p>We sent a 6-digit code to <strong id="display-email" style="color: var(--text-main);"></strong></p>
+                    <p>We sent a 6-digit code to <strong id="display-email" style="color: var(--text-main);"></strong>
+                    </p>
                 </div>
 
                 <form id="otp-form">
                     <div class="otp-inputs">
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="0" autofocus>
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="1">
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="2">
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="3">
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="4">
-                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" data-index="5">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="0" autofocus>
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="1">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="2">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="3">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="4">
+                        <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]"
+                            data-index="5">
                     </div>
 
                     <div id="attempt-warning" class="hidden" style="text-align: center; margin-bottom: 12px;">
@@ -360,7 +380,7 @@
                     </button>
 
                     <div class="helper-text">
-                        Didn't receive a code? 
+                        Didn't receive a code?
                         <button type="button" id="btn-resend-otp" class="resend-btn" disabled>Resend code</button>
                         <span id="cooldown-timer">(in 60s)</span>
                     </div>
@@ -370,11 +390,8 @@
     </div>
 
     <footer>
-        <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; font-size: 0.825rem; color: var(--text-muted); text-align: center;">
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--success); font-weight: 600;">
-                <span style="width: 6px; height: 6px; background: var(--success); border-radius: 50%;"></span>
-                <span>All Systems Operational</span>
-            </div>
+        <div
+            style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; font-size: 0.825rem; color: var(--text-muted); text-align: center;">
             <div>&copy; 2026 Co-Drive. Safe, minimalist vehicle fleet management.</div>
         </div>
     </footer>
@@ -448,7 +465,7 @@
                 displayEmail.textContent = userEmail;
                 stepEmail.classList.add('hidden');
                 stepOtp.classList.remove('hidden');
-                
+
                 showAlert('Verification code sent to your inbox!', true);
                 startCooldown(res.cooldown_seconds || 60);
 
@@ -584,4 +601,5 @@
         }
     </script>
 </body>
+
 </html>

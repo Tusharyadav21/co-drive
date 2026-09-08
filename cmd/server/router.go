@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"co-drive/internal/auth"
@@ -87,6 +88,28 @@ func NewRouter(d RouterDeps) http.Handler {
 
 	// Serve static frontend UI pages & assets
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir(d.StaticDir))))
+
+	// Root-level metadata & browser icon endpoints
+	r.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		path := filepath.Join(d.StaticDir, "icons", "favicon.ico")
+		if _, err := os.Stat(path); err != nil {
+			path = filepath.Join(d.StaticDir, "favicon.ico")
+		}
+		w.Header().Set("Content-Type", "image/x-icon")
+		http.ServeFile(w, r, path)
+	})
+	r.Get("/apple-touch-icon.png", func(w http.ResponseWriter, r *http.Request) {
+		path := filepath.Join(d.StaticDir, "icons", "apple-touch-icon.png")
+		if _, err := os.Stat(path); err != nil {
+			path = filepath.Join(d.StaticDir, "apple-touch-icon.png")
+		}
+		w.Header().Set("Content-Type", "image/png")
+		http.ServeFile(w, r, path)
+	})
+	r.Get("/site.webmanifest", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/manifest+json")
+		http.ServeFile(w, r, filepath.Join(d.StaticDir, "site.webmanifest"))
+	})
 
 	for path, file := range staticPages {
 		serve := servePage(filepath.Join(d.StaticDir, file))

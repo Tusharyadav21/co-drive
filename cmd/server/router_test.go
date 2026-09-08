@@ -27,7 +27,7 @@ func newTestRouter(t *testing.T) http.Handler {
 	sessionService := auth.NewSessionService(auth.NewSessionRepository(db))
 
 	staticDir := t.TempDir()
-	for _, f := range []string{"index.html", "auth.html", "dashboard.html", "profile.html", "logs.html"} {
+	for _, f := range []string{"index.html", "auth.html", "dashboard.html", "profile.html", "logs.html", "favicon.ico", "apple-touch-icon.png", "site.webmanifest"} {
 		if err := os.WriteFile(filepath.Join(staticDir, f), []byte("<html>"+f+"</html>"), 0o600); err != nil {
 			t.Fatalf("failed to write fixture %s: %v", f, err)
 		}
@@ -123,6 +123,9 @@ func TestPublicRoutes(t *testing.T) {
 		{http.MethodGet, "/logs", http.StatusOK},
 		{http.MethodGet, "/logs/", http.StatusOK},
 		{http.MethodGet, "/health", http.StatusOK},
+		{http.MethodGet, "/favicon.ico", http.StatusOK},
+		{http.MethodGet, "/apple-touch-icon.png", http.StatusOK},
+		{http.MethodGet, "/site.webmanifest", http.StatusOK},
 		// Public auth endpoints exist; a bad body is a 400, not a 404 or 401.
 		{http.MethodPost, "/api/auth/login", http.StatusBadRequest},
 		{http.MethodPost, "/api/auth/register", http.StatusBadRequest},
